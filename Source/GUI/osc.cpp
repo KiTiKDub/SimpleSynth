@@ -71,6 +71,9 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts, Visualizer& viz) :
     addAndMakeVisible(fmOsc);
     setRotarySlider(fmDepth);
     fmDepth.setTitle("fmDepth");
+
+    addAndMakeVisible(oscWaves);
+    addAndMakeVisible(oscWavesR);
 }
 
 OscComp::~OscComp()
@@ -86,7 +89,7 @@ void OscComp::paint(juce::Graphics& g)
     auto boundsRight = bounds;
     //g.drawRect(boundsRight);
 
-    auto oscPicture = boundsLeft.removeFromTop(boundsLeft.getHeight() * .5).reduced(5);
+    auto oscPicture = boundsLeft.removeFromTop(boundsLeft.getHeight() * .5);
     auto adsrBounds = bounds.removeFromBottom(bounds.getHeight() * .4);
     auto waveTypeBounds = bounds.removeFromBottom(bounds.getHeight() * .166);
     auto gainBounds = bounds.removeFromBottom(bounds.getHeight() * .2);
@@ -95,7 +98,7 @@ void OscComp::paint(juce::Graphics& g)
 
     g.fillRect(oscPicture);
     g.setColour(juce::Colours::white);
-    g.drawFittedText("Soon...", oscPicture, juce::Justification::centred, 1);
+    //g.drawFittedText("Soon...", oscPicture, juce::Justification::centred, 1);
 
     g.setColour(juce::Colours::black);
 
@@ -107,7 +110,7 @@ void OscComp::paint(juce::Graphics& g)
 
     g.fillRect(oscPictureR);
     g.setColour(juce::Colours::white);
-    g.drawFittedText("Soon...", oscPictureR, juce::Justification::centred, 1);
+    //g.drawFittedText("Soon...", oscPictureR, juce::Justification::centred, 1);
 
 }
 
@@ -140,7 +143,7 @@ void OscComp::resized()
     auto releaseBounds1 = adsrBounds1.removeFromLeft(adsrBounds1.getWidth());
     release1.setBounds(releaseBounds1);
 
-    //vis->setBounds(boundsLeft);
+    oscWaves.setBounds(boundsLeft);
 
     auto adsrBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .3);
     auto waveTypeBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .166);
@@ -169,6 +172,8 @@ void OscComp::resized()
     sustain2.setBounds(sustainBounds2);
     auto releaseBounds2 = adsrBounds2.removeFromLeft(adsrBounds2.getWidth());
     release2.setBounds(releaseBounds2);
+
+    oscWavesR.setBounds(boundsRight);
 
 }
 
@@ -199,4 +204,68 @@ void OscComp::setRotarySlider(juce::Slider& slider)
 void OscComp::updateToggleState(juce::Button* button)
 {
     auto state = button->getToggleState();
+    if (button->getRadioGroupId() == 1)
+    {
+        oscWaves.setOscType(button->getButtonText());
+    }
+    else
+    {
+        oscWavesR.setOscType(button->getButtonText());
+    }
+    repaint();
+}
+
+OscWaves::OscWaves()
+{
+}
+
+OscWaves::~OscWaves()
+{
+}
+
+void OscWaves::paint(juce::Graphics& g)
+{
+    auto bounds = getLocalBounds();
+    juce::Path p;
+    g.setColour(juce::Colours::white);
+
+    if (!isSine)
+    {
+        //draw sine
+    }
+    else if (!isSaw)
+    {
+        p.startNewSubPath(bounds.getX(), bounds.getHeight() / 2);
+        p.lineTo(bounds.getCentreX(), bounds.getHeight() / 5);
+        p.lineTo(bounds.getCentreX(), bounds.getHeight() * .8);
+        p.lineTo(bounds.getWidth(), bounds.getHeight() / 2);
+
+        g.strokePath(p, juce::PathStrokeType(1));
+    }
+    else if (!isSquare)
+    {
+        p.startNewSubPath(bounds.getX(), bounds.getHeight() / 5);
+        p.lineTo(bounds.getCentreX(), bounds.getHeight() / 5);
+        p.lineTo(bounds.getCentreX(), bounds.getHeight() * .8);
+        p.lineTo(bounds.getWidth(), bounds.getHeight() * .8);
+
+        g.strokePath(p, juce::PathStrokeType(1));
+    }
+    else
+    {
+        // draw triangle
+    }
+}
+
+void OscWaves::resized()
+{
+}
+
+void OscWaves::setOscType(juce::String oscType)
+{
+    isSine = oscType.compare("Sine");
+    isSaw = oscType.compare("Saw");
+    isSquare = oscType.compare("Square");
+    isTri = oscType.compare("Triangle");
+    
 }

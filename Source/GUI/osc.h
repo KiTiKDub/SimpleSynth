@@ -13,6 +13,25 @@
 #include "../SynthVoice.h"
 #include "KiTiKLNF.h"
 
+struct OscWaves : public juce::Component
+{
+    OscWaves();
+    ~OscWaves();
+
+    void paint(juce::Graphics& g) override;
+    void resized() override;
+    void setOscType(juce::String type);
+
+private:
+
+    juce::String oscType;
+    int isSine = 1;
+    int isSaw = 0;
+    int isSquare = 1;
+    int isTri = 1;
+};
+
+
 struct OscComp : public juce::Component
 {
     OscComp(juce::AudioProcessorValueTreeState& apvts, Visualizer&);
@@ -29,6 +48,8 @@ struct OscComp : public juce::Component
 private:
 
     Laf lnf;
+    OscWaves oscWaves;
+    OscWaves oscWavesR;
 
     juce::ToggleButton sine1     { "Sine" },
                        square1   { "Square" },
@@ -62,9 +83,4 @@ private:
     juce::Slider fmDepth{ "Depth" };
     juce::AudioProcessorValueTreeState::ButtonAttachment fmOscAT;
     juce::AudioProcessorValueTreeState::SliderAttachment fmDepthAT;
-
-    //Visualizer* vis;
-
-    //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OscComp);
 };
-
