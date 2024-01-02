@@ -360,7 +360,8 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     globalGain.processCtx(buffer);
 
-    //viz.pushBuffer(buffer);
+    oscBuffer.setSize(2, buffer.getNumSamples());
+    oscBuffer = buffer;
 
     for (auto channel = 0; channel < totalNumOutputChannels; ++channel) 
     {
@@ -484,6 +485,16 @@ float SimpleSynthAudioProcessor::getOutRMS(int channel)
 {
     jassert(channel == 0 || channel == 1);
     return rmsOut[channel];
+}
+
+const float* SimpleSynthAudioProcessor::getOscSample(int channel)
+{
+    return oscBuffer.getReadPointer(channel);
+}
+
+const int SimpleSynthAudioProcessor::getOscSize()
+{
+    return oscBuffer.getNumSamples();
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createParameterLayout()

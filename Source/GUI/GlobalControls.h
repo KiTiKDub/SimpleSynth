@@ -11,10 +11,11 @@
 #pragma once
 #include <JuceHeader.h>
 #include "KiTiKLNF.h"
+#include "oscilloscope.h"
 
 struct GlobalControls : public juce::Component
 {
-    GlobalControls(juce::AudioProcessorValueTreeState& apvts);
+    GlobalControls(SimpleSynthAudioProcessor& ap);
     ~GlobalControls();
 
     void paint(juce::Graphics& g) override;
@@ -27,6 +28,8 @@ private:
 
     Laf lnf;
     std::array<Laf::LevelMeter, 2> outMeter;
+
+    OscilloscopeComp oscilloscope;
 
     juce::ToggleButton bypass1      { "Bypass Synth 1" },
                        bypass2      { "Bypass Synth 2" },

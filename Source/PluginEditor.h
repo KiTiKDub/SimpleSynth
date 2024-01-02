@@ -35,7 +35,7 @@ private:
 
     OscComp oscComp{audioProcessor.apvts, audioProcessor.viz};
     FilterComp filterComp{ audioProcessor.apvts };
-    GlobalControls globalControls{ audioProcessor.apvts };
+    GlobalControls globalControls{ audioProcessor };
     LFOComp lfoComp{ audioProcessor.apvts };
 
     juce::TooltipWindow name{ this, 100 };

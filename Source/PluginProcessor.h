@@ -66,6 +66,9 @@ public:
     void setLFOs(juce::AudioBuffer<float>& buffer);
     float getOutRMS(int channel);
 
+    const float* getOscSample(int channel);
+    const int getOscSize();
+
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
@@ -227,33 +230,21 @@ private:
     std::array<bool, 4> setLFO2Wave;
     float lfo2Output;
 
+    //Metering
+    juce::AudioBuffer<float> oscBuffer;
+
     //RoadMap:
-        //Bypass Buttons: DONE
-            //Osc 1 DONE
-            //Osc 2 DONE
-            //Filter(s) DONE
-        //Global Gain DONE
-        //output meters DONE
-        //LFO's DONE
-            //Attach all the parms DONE
-            //Create everything... twice DONE
             
     //Nice Haves (2.0?):
         //Dynamic Voice Adjustment
         //Pitch/Mod Wheel visuals
         //JUCE FFT Graphs
         //Preset Manager
-        //Filters don't stay active when not displayed. 
+        //Filters don't stay active when not displayed.
+        //Reorder filters
+        //draw waveforms
 
     //Bugs/Design
-        //Clicking when note finished playing DONE
-        //Design Vertical and Horizontal Sliders DONE
-        //Outlines/Seperators/backgrounds DONE
-        //Fix Gloabl Gain Knob EH
-        // Update Drop Down LNF DONE
-        // Update Knobs so they don't change to wrong label DONE
-        //Buttons clipping DONE
-        //Adjust global area DONE
 
 
     //==============================================================================

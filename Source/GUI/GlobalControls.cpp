@@ -10,13 +10,15 @@
 
 #include "GlobalControls.h"
 
-GlobalControls::GlobalControls(juce::AudioProcessorValueTreeState& apvts) :
-    bypass1AT(apvts, "bypassSynth1", bypass1), bypass2AT(apvts, "bypassSynth2", bypass2), 
-    bypassFilterAT(apvts, "bypassFilter", bypassFilter), gainAT(apvts, "gGain", globalGain)
+GlobalControls::GlobalControls(SimpleSynthAudioProcessor& ap) :
+    bypass1AT(ap.apvts, "bypassSynth1", bypass1), bypass2AT(ap.apvts, "bypassSynth2", bypass2), 
+    bypassFilterAT(ap.apvts, "bypassFilter", bypassFilter), gainAT(ap.apvts, "gGain", globalGain),
+    oscilloscope(ap)
 {
     setLookAndFeel(&lnf);
     addAndMakeVisible(outMeter[0]);
     addAndMakeVisible(outMeter[1]);
+    addAndMakeVisible(oscilloscope);
 
     setRotarySlider(globalGain);
 
@@ -61,39 +63,49 @@ void GlobalControls::paint(juce::Graphics& g)
     auto synth2Area = bounds.removeFromLeft(bounds.getWidth() * .21);
     g.drawFittedText(bypass2.getName(), synth2Area, juce::Justification::right, 1);
 
-    auto filterArea = bounds.removeFromRight(bounds.getWidth() * .48);
+    auto filterArea = bounds.removeFromRight(bounds.getWidth() * .45);
     g.drawFittedText(bypassFilter.getName(), filterArea, juce::Justification::left, 1);
 
-    //g.drawRect(bounds, 1);
+    g.setColour(juce::Colours::white);
+
+    auto fftArea = bounds.removeFromRight(bounds.getWidth() * .5).reduced(5);
+    auto oscArea = bounds.reduced(5);
+    g.fillRect(fftArea);
+    g.fillRect(oscArea);
+
+    g.setColour(juce::Colours::black);
 }
 
 void GlobalControls::resized()
 {
     auto bounds = getLocalBounds();
+    auto logoArea = bounds.removeFromLeft(bounds.getWidth() * .2).reduced(5);
+    auto bp1Area = bounds.removeFromLeft(bounds.getWidth() * .05);
+    auto bp2Area = bounds.removeFromLeft(bounds.getWidth() * .32);
 
-    juce::FlexBox flexBox;
-    flexBox.flexDirection = juce::FlexBox::Direction::row;
-    flexBox.flexWrap = juce::FlexBox::Wrap::noWrap;
+    bypass1.setBounds(bp1Area);
+    bypass2.setBounds(bp2Area);
 
-    auto logo = juce::FlexItem();
-    auto deadSpace = juce::FlexItem();
-    //auto Meters = juce::FlexItem();
+    auto meterRight = bounds.removeFromRight(bounds.getWidth() * .045);
+    auto meterLeft = bounds.removeFromRight(bounds.getWidth() * .05);
+    auto gGainArea = bounds.removeFromRight(bounds.getWidth() * .15);
+    auto filterArea = bounds.removeFromRight(bounds.getWidth() * .1);
 
-    flexBox.items.add(logo.withFlex(2.f));
-    flexBox.items.add(juce::FlexItem(bypass1).withFlex(1.f));
-    flexBox.items.add(juce::FlexItem(bypass2).withFlex(2.f));
-    flexBox.items.add(deadSpace.withFlex(2.5f));
-    flexBox.items.add(juce::FlexItem(bypassFilter).withFlex(1.f));
-    flexBox.items.add(juce::FlexItem(globalGain).withFlex(2.f));
-    flexBox.items.add(juce::FlexItem(outMeter[0]).withFlex(.25));
-    flexBox.items.add(juce::FlexItem(outMeter[1]).withFlex(.25));
+    outMeter[0].setBounds(meterLeft);
+    outMeter[1].setBounds(meterRight);
+    globalGain.setBounds(gGainArea);
+    bypassFilter.setBounds(filterArea);
 
-    flexBox.performLayout(bounds);
+    auto fftArea = bounds.removeFromRight(bounds.getWidth() * .6).reduced(5);
+    auto oscArea = bounds.reduced(5);
+    oscArea.translate(-8, 0);
+
+    oscilloscope.setBounds(oscArea);
 }
 
 void GlobalControls::setRotarySlider(juce::Slider& slider)
 {
-    slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+    slider.setSliderStyle(juce::Slider::LinearHorizontal);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
     slider.setComponentID("gGain");
     addAndMakeVisible(slider);
@@ -112,4 +124,8 @@ void GlobalControls::update(const std::vector<float> &values)
 
     outMeter[0].repaint();
     outMeter[1].repaint();
+
+    oscilloscope.repaint();
+
+    repaint();
 }
