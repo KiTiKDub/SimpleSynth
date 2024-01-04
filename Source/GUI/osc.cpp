@@ -98,6 +98,7 @@ void OscComp::paint(juce::Graphics& g)
 
     g.fillRect(oscPicture);
     g.setColour(juce::Colours::white);
+    g.drawRect(oscPicture);
     //g.drawFittedText("Soon...", oscPicture, juce::Justification::centred, 1);
 
     g.setColour(juce::Colours::black);
@@ -110,6 +111,7 @@ void OscComp::paint(juce::Graphics& g)
 
     g.fillRect(oscPictureR);
     g.setColour(juce::Colours::white);
+    g.drawRect(oscPictureR);
     //g.drawFittedText("Soon...", oscPictureR, juce::Justification::centred, 1);
 
 }
@@ -143,6 +145,7 @@ void OscComp::resized()
     auto releaseBounds1 = adsrBounds1.removeFromLeft(adsrBounds1.getWidth());
     release1.setBounds(releaseBounds1);
 
+    boundsLeft.translate(5, 0);
     oscWaves.setBounds(boundsLeft);
 
     auto adsrBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .3);
@@ -173,6 +176,8 @@ void OscComp::resized()
     auto releaseBounds2 = adsrBounds2.removeFromLeft(adsrBounds2.getWidth());
     release2.setBounds(releaseBounds2);
 
+    boundsRight = boundsRight.reduced(5);
+    boundsRight.removeFromRight(boundsRight.getWidth() * .02);
     oscWavesR.setBounds(boundsRight);
 
 }
@@ -226,34 +231,52 @@ OscWaves::~OscWaves()
 void OscWaves::paint(juce::Graphics& g)
 {
     auto bounds = getLocalBounds();
+    auto height = bounds.getHeight();
+    auto width = bounds.getWidth();
+    auto centerX = bounds.getCentreX();
+
     juce::Path p;
     g.setColour(juce::Colours::white);
 
     if (!isSine)
     {
-        //draw sine
+        p.startNewSubPath(bounds.getX(), height / 2);
+
+        for (int i = 0; i < width; i+=5)
+        {
+            float yAxis = std::sin(2*3.14*i / width);
+            auto point = juce::jmap(yAxis, -1.f, 1.f, (float)(height * .8), (float)(height * .2));
+            p.lineTo(i, point);
+        }
+
+        g.strokePath(p, juce::PathStrokeType(1));
     }
     else if (!isSaw)
     {
-        p.startNewSubPath(bounds.getX(), bounds.getHeight() / 2);
-        p.lineTo(bounds.getCentreX(), bounds.getHeight() / 5);
-        p.lineTo(bounds.getCentreX(), bounds.getHeight() * .8);
-        p.lineTo(bounds.getWidth(), bounds.getHeight() / 2);
+        p.startNewSubPath(bounds.getX(), height / 2);
+        p.lineTo(centerX, height / 5);
+        p.lineTo(centerX, height * .8);
+        p.lineTo(width, height / 2);
 
         g.strokePath(p, juce::PathStrokeType(1));
     }
     else if (!isSquare)
     {
-        p.startNewSubPath(bounds.getX(), bounds.getHeight() / 5);
-        p.lineTo(bounds.getCentreX(), bounds.getHeight() / 5);
-        p.lineTo(bounds.getCentreX(), bounds.getHeight() * .8);
-        p.lineTo(bounds.getWidth(), bounds.getHeight() * .8);
+        p.startNewSubPath(bounds.getX(), height / 5);
+        p.lineTo(centerX, height / 5);
+        p.lineTo(centerX, height * .8);
+        p.lineTo(width, height * .8);
 
         g.strokePath(p, juce::PathStrokeType(1));
     }
     else
     {
-        // draw triangle
+        p.startNewSubPath(bounds.getX(), height / 2);
+        p.lineTo(centerX - width / 4, height / 5);
+        p.lineTo(centerX + width / 4, height * .8);
+        p.lineTo(width, height / 2);
+
+        g.strokePath(p, juce::PathStrokeType(1));
     }
 }
 

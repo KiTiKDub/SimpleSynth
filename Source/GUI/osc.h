@@ -25,8 +25,8 @@ struct OscWaves : public juce::Component
 private:
 
     juce::String oscType;
-    int isSine = 1;
-    int isSaw = 0;
+    int isSine = 0;
+    int isSaw = 1;
     int isSquare = 1;
     int isTri = 1;
 };

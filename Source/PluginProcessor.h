@@ -232,17 +232,14 @@ private:
 
     //Metering
     juce::AudioBuffer<float> oscBuffer;
-
-    //RoadMap:
-            
-    //Nice Haves (2.0?):
-        //Dynamic Voice Adjustment
-        //Pitch/Mod Wheel visuals
-        //JUCE FFT Graphs
-        //Preset Manager
-        //Filters don't stay active when not displayed.
-        //Reorder filters
-        //draw waveforms
+     
+    //RoadMap: (2.0?):
+        //Dynamic Voice Adjustment -> books [4]
+        //Pitch/Mod Wheel visuals -> probably do last [6]
+        //JUCE FFT Graphs -> can do without books [1]
+        //Preset Manager -> Video [2]
+        //Filters don't stay active when not displayed. -> brainstorm [3]
+        //Reorder filters -> brainstorm [5]
 
     //Bugs/Design
 
