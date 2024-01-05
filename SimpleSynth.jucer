@@ -21,6 +21,10 @@
         <FILE id="lqwljV" name="oscData.cpp" compile="1" resource="0" file="Source/DSP/oscData.cpp"/>
       </GROUP>
       <GROUP id="{4A5F8667-0A5B-0839-A7E4-0E133E4E50C9}" name="GUI">
+        <FILE id="vbFlNj" name="KiTiK_utilityViz.cpp" compile="1" resource="0"
+              file="Source/GUI/KiTiK_utilityViz.cpp"/>
+        <FILE id="kDXO7H" name="KiTiK_utilityViz.h" compile="0" resource="0"
+              file="Source/GUI/KiTiK_utilityViz.h"/>
         <FILE id="V5HxBF" name="oscilloscope.cpp" compile="1" resource="0"
               file="Source/GUI/oscilloscope.cpp"/>
         <FILE id="fUGTbF" name="oscilloscope.h" compile="0" resource="0" file="Source/GUI/oscilloscope.h"/>

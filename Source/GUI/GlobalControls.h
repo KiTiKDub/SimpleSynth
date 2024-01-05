@@ -12,6 +12,7 @@
 #include <JuceHeader.h>
 #include "KiTiKLNF.h"
 #include "oscilloscope.h"
+#include "KiTiK_utilityViz.h"
 
 struct GlobalControls : public juce::Component
 {
@@ -30,6 +31,8 @@ private:
     std::array<Laf::LevelMeter, 2> outMeter;
 
     OscilloscopeComp oscilloscope;
+    OscilloscopeComp osc2;
+    kitik::FFT fft;
 
     juce::ToggleButton bypass1      { "Bypass Synth 1" },
                        bypass2      { "Bypass Synth 2" },

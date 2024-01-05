@@ -318,6 +318,9 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         }
 
     }*/
+
+    int type = filterType->getIndex(); //USE THIS TO MAKE SURE ONLY ONE FILTER IS USED AT A TIME
+
     globalGain.setGain(gGain->get());
 
     setLFOs(buffer);
@@ -362,6 +365,8 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     oscBuffer.setSize(2, buffer.getNumSamples());
     oscBuffer = buffer;
+    fftData.pushNextSampleIntoFifo(oscBuffer);
+
 
     for (auto channel = 0; channel < totalNumOutputChannels; ++channel) 
     {

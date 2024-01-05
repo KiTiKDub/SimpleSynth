@@ -13,12 +13,14 @@
 GlobalControls::GlobalControls(SimpleSynthAudioProcessor& ap) :
     bypass1AT(ap.apvts, "bypassSynth1", bypass1), bypass2AT(ap.apvts, "bypassSynth2", bypass2), 
     bypassFilterAT(ap.apvts, "bypassFilter", bypassFilter), gainAT(ap.apvts, "gGain", globalGain),
-    oscilloscope(ap)
+    oscilloscope(ap), osc2(ap), fft(ap.fftData)
 {
     setLookAndFeel(&lnf);
     addAndMakeVisible(outMeter[0]);
     addAndMakeVisible(outMeter[1]);
     addAndMakeVisible(oscilloscope);
+    addAndMakeVisible(osc2);
+    addAndMakeVisible(fft);
 
     setRotarySlider(globalGain);
 
@@ -99,8 +101,11 @@ void GlobalControls::resized()
     auto fftArea = bounds.removeFromRight(bounds.getWidth() * .6).reduced(5);
     auto oscArea = bounds.reduced(5);
     oscArea.translate(-8, 0);
-
     oscilloscope.setBounds(oscArea);
+
+    fftArea.translate(-7, 0);
+    fftArea.removeFromRight(fftArea.getWidth() * .35);
+    fft.setBounds(fftArea);
 }
 
 void GlobalControls::setRotarySlider(juce::Slider& slider)
@@ -126,6 +131,8 @@ void GlobalControls::update(const std::vector<float> &values)
     outMeter[1].repaint();
 
     oscilloscope.repaint();
+    osc2.repaint();
+    fft.repaint();
 
     repaint();
 }
