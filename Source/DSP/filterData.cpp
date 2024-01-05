@@ -36,13 +36,19 @@ void FilterData::prepareToPlay(double sampleRate, int samplesPerBlock, int numCh
     }
 }
 
-void FilterData::process(juce::AudioBuffer<float>& buffer)
+void FilterData::process(juce::AudioBuffer<float>& buffer, int type)
 {
     auto block = juce::dsp::AudioBlock<float>(buffer);
     auto context = juce::dsp::ProcessContextReplacing<float>(block);
 
-    ladderFilter.process(context);
-    phaserFilter.process(context);
+    if (type == 0)
+    {
+        ladderFilter.process(context);
+    }
+    else if (type == 1)
+    {
+        phaserFilter.process(context);
+    }
 }
 
 void FilterData::updateLadderParams(int mode, float cuttoffFreq, float resonance, float drive)
@@ -84,8 +90,10 @@ void FilterData::updatePhaserParams(float rate, float depth, float centerFreq, f
     phaserFilter.setMix(mix);
 }
 
-void FilterData::processComb(int channel, juce::AudioBuffer<float>& buffer, float freq, float feedback, float gain, float mix, double sampleRate)
+void FilterData::processComb(int channel, juce::AudioBuffer<float>& buffer, float freq, float feedback, float gain, float mix, double sampleRate, int type)
 {
+    if (type != 2) { return; }
+
     //comb filtering is selayed signal. My implmentation with delayline
     smoothedDelay[channel].setTargetValue(freq/1000);
     auto block = juce::dsp::AudioBlock<float>(buffer);

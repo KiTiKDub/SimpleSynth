@@ -14,10 +14,10 @@
 struct FilterData 
 {
     void prepareToPlay(double sampleRate, int samplesPerBlock, int numChannels);
-    void process(juce::AudioBuffer<float>& buffer);
+    void process(juce::AudioBuffer<float>& buffer, int type);
     void updateLadderParams(int mode, float cuttoffFreq, float resonance, float drive);
     void updatePhaserParams(float rate, float depth, float centerFreq, float feedback, float mix);
-    void processComb(int channel, juce::AudioBuffer<float>& buffer, float freq, float feedback, float gain, float mix, double sampleRate);
+    void processComb(int channel, juce::AudioBuffer<float>& buffer, float freq, float feedback, float gain, float mix, double sampleRate, int type);
     void reset(int filterChoice);
     
 private:

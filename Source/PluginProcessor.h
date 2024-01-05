@@ -240,7 +240,6 @@ private:
         //Dynamic Voice Adjustment -> books [4]
         //Pitch/Mod Wheel visuals -> probably do last [6]
         //Preset Manager -> Video [2]
-        //Filters don't stay active when not displayed. -> brainstorm [3]
         //Reorder filters -> brainstorm [5]
 
     //Bugs/Design

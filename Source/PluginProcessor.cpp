@@ -356,9 +356,9 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     if (!bypassFilter->get())
     {
-        filters.process(buffer);
+        filters.process(buffer, type);
         for (auto ch = 0; ch < buffer.getNumChannels(); ++ch)
-            filters.processComb(ch, buffer, combParams[0], combParams[1], combParams[2], combParams[3], getSampleRate());
+            filters.processComb(ch, buffer, combParams[0], combParams[1], combParams[2], combParams[3], getSampleRate(), type);
     }
 
     globalGain.processCtx(buffer);
