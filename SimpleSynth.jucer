@@ -10,6 +10,11 @@
             file="../../Muisc/Pictures/KITIK_LOGO_NO_BKGD.png"/>
     </GROUP>
     <GROUP id="{FFEEB3B7-0063-789B-25B0-8845512DC57E}" name="Source">
+      <GROUP id="{D9F9C90C-B326-1522-665E-1F81134751D5}" name="Utility">
+        <FILE id="hYGGeF" name="PresetManager.cpp" compile="1" resource="0"
+              file="Source/Utility/PresetManager.cpp"/>
+        <FILE id="XSpSnF" name="PresetManager.h" compile="0" resource="0" file="Source/Utility/PresetManager.h"/>
+      </GROUP>
       <GROUP id="{063AB2D2-1F2F-5B78-0BAA-4E2A51DC8185}" name="DSP">
         <FILE id="dEVR0g" name="lfoData.cpp" compile="1" resource="0" file="Source/DSP/lfoData.cpp"/>
         <FILE id="SWRl00" name="lfoData.h" compile="0" resource="0" file="Source/DSP/lfoData.h"/>

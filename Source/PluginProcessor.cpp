@@ -391,17 +391,19 @@ juce::AudioProcessorEditor* SimpleSynthAudioProcessor::createEditor()
 //==============================================================================
 void SimpleSynthAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    juce::MemoryOutputStream mos(destData, true);
-    apvts.state.writeToStream(mos);
+    const auto state = apvts.copyState();
+    const auto xml(state.createXml());
+    copyXmlToBinary(*xml, destData);
 
 }
 
 void SimpleSynthAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    auto tree = juce::ValueTree::readFromData(data, sizeInBytes);
-    if (tree.isValid()) {
-        apvts.replaceState(tree);
-    }
+    const auto xmlState = getXmlFromBinary(data, sizeInBytes);
+    if (xmlState == nullptr)
+        return;
+    const auto newTree = juce::ValueTree::fromXml(*xmlState);
+    apvts.replaceState(newTree);
 }
 
 void SimpleSynthAudioProcessor::fillArrays()

@@ -15,6 +15,7 @@
 #include "DSP/globalGain.h"
 #include "DSP/lfoData.h"
 #include "GUI/KiTiK_utilityViz.h"
+//#include "Utility/PresetManager.h"
 
 //==============================================================================
 /**
@@ -75,6 +76,8 @@ public:
 
     juce::MidiKeyboardState keyState;
     kitik::FFTData fftData;
+
+    //PresetManager& getPresetManager() { return *presetManager; }
     Visualizer viz;
 
 private:
@@ -234,16 +237,18 @@ private:
 
     //Metering
     juce::AudioBuffer<float> oscBuffer;
+
+    //std::unique_ptr<PresetManager> presetManager;
     
      
     //RoadMap: (2.0?):
         //Dynamic Voice Adjustment -> books [4]
         //Pitch/Mod Wheel visuals -> probably do last [6]
         //Preset Manager -> Video [2]
-        //Reorder filters -> brainstorm [5]
+            //Check if you need an overwrite message when resaving a preset
 
     //Bugs/Design
-
+        //move osc into utility
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessor)
