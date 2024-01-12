@@ -13,7 +13,7 @@
 GlobalControls::GlobalControls(SimpleSynthAudioProcessor& ap) :
     bypass1AT(ap.apvts, "bypassSynth1", bypass1), bypass2AT(ap.apvts, "bypassSynth2", bypass2), 
     bypassFilterAT(ap.apvts, "bypassFilter", bypassFilter), gainAT(ap.apvts, "gGain", globalGain),
-    oscilloscope(ap), fft(ap.fftData)
+    oscilloscope(ap.oscData), fft(ap.fftData)
 {
     setLookAndFeel(&lnf);
     addAndMakeVisible(outMeter[0]);
@@ -29,6 +29,16 @@ GlobalControls::GlobalControls(SimpleSynthAudioProcessor& ap) :
     bypass2.setComponentID("Power");
     addAndMakeVisible(bypassFilter);
     bypassFilter.setComponentID("Power");
+
+    openPresetManager.setToggleState(false, juce::dontSendNotification);
+    addAndMakeVisible(openPresetManager);
+
+    openPresetManager.setClickingTogglesState(true);
+
+    openPresetManager.onClick = [this]()
+        {
+            isShowTrue(openPresetManager.getToggleState());
+        };
 
 }
 
@@ -48,7 +58,9 @@ void GlobalControls::paint(juce::Graphics& g)
 
     auto logo = juce::ImageCache::getFromMemory(BinaryData::KITIK_LOGO_NO_BKGD_png, BinaryData::KITIK_LOGO_NO_BKGD_pngSize);
     //g.drawImage(logo, maskArea.toFloat());
-    g.drawImage(logo, maskArea.toFloat(), juce::RectanglePlacement::fillDestination);
+    openPresetManager.setImages(false, true, false, logo, 0, juce::Colours::white, juce::Image(), 0, juce::Colours::white, juce::Image(), 0, juce::Colour(64u, 194u, 230u));
+    openPresetManager.setBounds(maskArea);
+    //g.drawImage(logo, maskArea.toFloat(), juce::RectanglePlacement::fillDestination);
 
     auto newFont = juce::Font(juce::Typeface::createSystemTypefaceFor(BinaryData::OFFSHORE_TTF, BinaryData::OFFSHORE_TTFSize));
     g.setColour(juce::Colours::whitesmoke);
@@ -133,4 +145,14 @@ void GlobalControls::update(const std::vector<float> &values)
     fft.repaint();
 
     repaint();
+}
+
+void GlobalControls::isShowTrue(bool toggleState)
+{
+    presetManagerView = toggleState;
+}
+
+bool GlobalControls::showPresetManager()
+{
+    return presetManagerView;
 }

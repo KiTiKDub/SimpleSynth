@@ -14,6 +14,8 @@
         <FILE id="hYGGeF" name="PresetManager.cpp" compile="1" resource="0"
               file="Source/Utility/PresetManager.cpp"/>
         <FILE id="XSpSnF" name="PresetManager.h" compile="0" resource="0" file="Source/Utility/PresetManager.h"/>
+        <FILE id="zRr7Vf" name="PresetPanel.cpp" compile="1" resource="0" file="Source/Utility/PresetPanel.cpp"/>
+        <FILE id="itQMaY" name="PresetPanel.h" compile="0" resource="0" file="Source/Utility/PresetPanel.h"/>
       </GROUP>
       <GROUP id="{063AB2D2-1F2F-5B78-0BAA-4E2A51DC8185}" name="DSP">
         <FILE id="dEVR0g" name="lfoData.cpp" compile="1" resource="0" file="Source/DSP/lfoData.cpp"/>
@@ -30,9 +32,6 @@
               file="Source/GUI/KiTiK_utilityViz.cpp"/>
         <FILE id="kDXO7H" name="KiTiK_utilityViz.h" compile="0" resource="0"
               file="Source/GUI/KiTiK_utilityViz.h"/>
-        <FILE id="V5HxBF" name="oscilloscope.cpp" compile="1" resource="0"
-              file="Source/GUI/oscilloscope.cpp"/>
-        <FILE id="fUGTbF" name="oscilloscope.h" compile="0" resource="0" file="Source/GUI/oscilloscope.h"/>
         <FILE id="BWwFN1" name="lfo.cpp" compile="1" resource="0" file="Source/GUI/lfo.cpp"/>
         <FILE id="kVrZ4s" name="lfo.h" compile="0" resource="0" file="Source/GUI/lfo.h"/>
         <FILE id="xQErs1" name="GlobalControls.cpp" compile="1" resource="0"

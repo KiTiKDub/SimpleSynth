@@ -10,16 +10,13 @@
 
 #pragma once
 #include <JuceHeader.h>
-#include "../PluginProcessor.h"
-
-namespace kitik {
 
     struct FFTData
     {
         FFTData();
         ~FFTData();
         void pushNextSampleIntoFifo(juce::AudioBuffer<float> buffer);
-        friend class FFT;
+        friend class FFTComp;
 
     protected:
 
@@ -39,10 +36,10 @@ namespace kitik {
         bool nextFFTBlockReady = false;
     };
 
-    struct FFT : public juce::Component
+    struct FFTComp : public juce::Component
     {
-        FFT(FFTData& d);
-        ~FFT();
+        FFTComp(FFTData& d);
+        ~FFTComp();
 
         void paint(juce::Graphics& g) override;
         void resized() override;
@@ -52,9 +49,22 @@ namespace kitik {
         FFTData& data;
     };
 
+    struct OscilloscopeData
+    {
+        OscilloscopeData();
+        ~OscilloscopeData();
+
+        void setBuffer(juce::AudioBuffer<float> buffer);
+        friend class OscilloscopeComp;
+
+    protected:
+        juce::AudioBuffer<float> oscBuffer;
+
+    };
+
     struct OscilloscopeComp : public juce::Component
     {
-        OscilloscopeComp(SimpleSynthAudioProcessor& p);
+        OscilloscopeComp(OscilloscopeData& d);
         ~OscilloscopeComp();
 
         void paint(juce::Graphics&) override;
@@ -62,9 +72,9 @@ namespace kitik {
 
     private:
 
-        SimpleSynthAudioProcessor& audioProcessor;
+        OscilloscopeData& data;
 
         std::vector<float> audioPoints;
     };
 
-}
+

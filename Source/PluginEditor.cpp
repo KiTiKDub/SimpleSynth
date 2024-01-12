@@ -11,12 +11,13 @@
 
 //==============================================================================
 SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (&p), audioProcessor (p), presetPanel(p.getPresetManager())
 {
     addAndMakeVisible(oscComp);
     addAndMakeVisible(filterComp);
     addAndMakeVisible(globalControls);
     addAndMakeVisible(lfoComp);
+    addAndMakeVisible(presetPanel);
 
     setKeyboard();
 
@@ -87,6 +88,7 @@ void SimpleSynthAudioProcessorEditor::resized()
     auto filterBounds = bounds.removeFromTop(bounds.getHeight() * .47);
     auto oscsBounds = filterBounds.removeFromLeft(filterBounds.getWidth() * .66);
     oscComp.setBounds(oscsBounds);
+    presetPanel.setBounds(oscsBounds);
     filterComp.setBounds(filterBounds);
 
     auto lfosBounds = bounds.removeFromTop(bounds.getHeight() * .7);
@@ -108,6 +110,19 @@ void SimpleSynthAudioProcessorEditor::timerCallback()
 
     globalControls.update(values);
     lfoComp.getComboValue(filterComp.getComboValue());   
+
+    auto showPreset = globalControls.showPresetManager();
+
+    if (!showPreset)
+    {
+        presetPanel.setVisible(true);
+        oscComp.setVisible(false);
+    }
+    else
+    {
+        oscComp.setVisible(true);
+        presetPanel.setVisible(false);
+    }
 }
 
 void SimpleSynthAudioProcessorEditor::setKeyboard()

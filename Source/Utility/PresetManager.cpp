@@ -15,7 +15,7 @@ const juce::File PresetManager::defaultDirectory{ juce::File::getSpecialLocation
 		.getChildFile(ProjectInfo::companyName)
 		.getChildFile(ProjectInfo::projectName)
 };
-const juce::String PresetManager::extension{ "preset" };
+const juce::String PresetManager::extension{ "ss" };
 const juce::String PresetManager::presetNameProperty{ "presetName" };
 
 PresetManager::PresetManager(juce::AudioProcessorValueTreeState& apvts) :
@@ -32,6 +32,7 @@ PresetManager::PresetManager(juce::AudioProcessorValueTreeState& apvts) :
 		}
 	}
 
+	valueTreeState.state.addListener(this);
 	currentPreset.referTo(valueTreeState.state.getPropertyAsValue(presetNameProperty, nullptr));
 }
 

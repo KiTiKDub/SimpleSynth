@@ -13,7 +13,7 @@
 #include <JuceHeader.h>
 
 
-class PresetManager
+class PresetManager : public juce::ValueTree::Listener
 {
 public:
 	static const juce::File defaultDirectory;

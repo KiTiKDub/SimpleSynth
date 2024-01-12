@@ -22,6 +22,11 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
                        )
 #endif
 {
+    apvts.state.setProperty(PresetManager::presetNameProperty, "", nullptr);
+    apvts.state.setProperty("version", ProjectInfo::versionString, nullptr);
+
+    presetManager = std::make_unique<PresetManager>(apvts);
+
     synth1.addSound(new SynthSound());
     synth1.addVoice(new SynthVoice());
     synth1.addVoice(new SynthVoice());
@@ -257,8 +262,7 @@ void SimpleSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
 
 void SimpleSynthAudioProcessor::releaseResources()
 {
-    // When playback stops, you can use this as an opportunity to free up any
-    // spare memory, etc.
+
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -268,15 +272,11 @@ bool SimpleSynthAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
     juce::ignoreUnused (layouts);
     return true;
   #else
-    // This is the place where you check if the layout is supported.
-    // In this template code we only support mono or stereo.
-    // Some plugin hosts, such as certain GarageBand versions, will only
-    // load plugins that support stereo bus layouts.
+
     if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono()
      && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
         return false;
 
-    // This checks if the input layout matches the output layout
    #if ! JucePlugin_IsSynth
     if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
         return false;
@@ -363,9 +363,8 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     globalGain.processCtx(buffer);
 
-    oscBuffer.setSize(2, buffer.getNumSamples());
-    oscBuffer = buffer;
-    fftData.pushNextSampleIntoFifo(oscBuffer);
+    oscData.setBuffer(buffer);
+    fftData.pushNextSampleIntoFifo(buffer);
 
 
     for (auto channel = 0; channel < totalNumOutputChannels; ++channel) 
@@ -492,16 +491,6 @@ float SimpleSynthAudioProcessor::getOutRMS(int channel)
 {
     jassert(channel == 0 || channel == 1);
     return rmsOut[channel];
-}
-
-const float* SimpleSynthAudioProcessor::getOscSample(int channel)
-{
-    return oscBuffer.getReadPointer(channel);
-}
-
-const int SimpleSynthAudioProcessor::getOscSize()
-{
-    return oscBuffer.getNumSamples();
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::createParameterLayout()

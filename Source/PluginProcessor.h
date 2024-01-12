@@ -15,7 +15,7 @@
 #include "DSP/globalGain.h"
 #include "DSP/lfoData.h"
 #include "GUI/KiTiK_utilityViz.h"
-//#include "Utility/PresetManager.h"
+#include "Utility/PresetManager.h"
 
 //==============================================================================
 /**
@@ -68,16 +68,15 @@ public:
     void setLFOs(juce::AudioBuffer<float>& buffer);
     float getOutRMS(int channel);
 
-    const float* getOscSample(int channel);
-    const int getOscSize();
-
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
+    std::unique_ptr<PresetManager> presetManager;
     juce::MidiKeyboardState keyState;
-    kitik::FFTData fftData;
+    FFTData fftData;
+    OscilloscopeData oscData;
 
-    //PresetManager& getPresetManager() { return *presetManager; }
+    PresetManager& getPresetManager() { return *presetManager; }
     Visualizer viz;
 
 private:
@@ -234,11 +233,6 @@ private:
     juce::AudioParameterFloat* lfo2Rate{ nullptr };
     std::array<bool, 4> setLFO2Wave;
     float lfo2Output;
-
-    //Metering
-    juce::AudioBuffer<float> oscBuffer;
-
-    //std::unique_ptr<PresetManager> presetManager;
     
      
     //RoadMap: (2.0?):

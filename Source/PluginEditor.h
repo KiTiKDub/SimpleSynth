@@ -14,6 +14,7 @@
 #include "GUI/filter.h"
 #include "GUI/GlobalControls.h"
 #include "GUI/lfo.h"
+#include "Utility/PresetPanel.h"
 
 //==============================================================================
 /**
@@ -37,6 +38,8 @@ private:
     FilterComp filterComp{ audioProcessor.apvts };
     GlobalControls globalControls{ audioProcessor };
     LFOComp lfoComp{ audioProcessor.apvts };
+    PresetPanel presetPanel;
+
 
     juce::TooltipWindow name{ this, 100 };
     juce::DropShadow ds;

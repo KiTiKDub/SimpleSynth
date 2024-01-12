@@ -10,6 +10,7 @@
 
 #pragma once
 #include <JuceHeader.h>
+#include "../PluginProcessor.h"
 #include "KiTiKLNF.h"
 #include "KiTiK_utilityViz.h"
 
@@ -24,19 +25,25 @@ struct GlobalControls : public juce::Component
     void setRotarySlider(juce::Slider&);
     void update(const std::vector<float>& values);
 
+    void isShowTrue(bool toggleState);
+    bool showPresetManager();
+
 private:
 
     Laf lnf;
     std::array<Laf::LevelMeter, 2> outMeter;
 
-    kitik::OscilloscopeComp oscilloscope;
-    kitik::FFT fft;
+    OscilloscopeComp oscilloscope;
+    FFTComp fft;
 
     juce::ToggleButton bypass1      { "Bypass Synth 1" },
                        bypass2      { "Bypass Synth 2" },
                        bypassFilter { "Bypass Filter" };
 
     juce::AudioProcessorValueTreeState::ButtonAttachment bypass1AT, bypass2AT, bypassFilterAT;
+
+    juce::ImageButton openPresetManager;
+    bool presetManagerView;
 
     juce::Slider globalGain;
     juce::AudioProcessorValueTreeState::SliderAttachment gainAT;
