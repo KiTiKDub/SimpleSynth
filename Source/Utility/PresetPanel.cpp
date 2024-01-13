@@ -13,6 +13,8 @@
 PresetPanel::PresetPanel(PresetManager& pm)
     : presetManager(pm)
 {
+    setLookAndFeel(&lnf);
+
     configureButton(saveButton, "Save");
     configureButton(deleteButton, "Delete");
     configureButton(previousPresetButton, "Previous");
@@ -22,6 +24,10 @@ PresetPanel::PresetPanel(PresetManager& pm)
     presetList.setMouseCursor(juce::MouseCursor::PointingHandCursor);
     addAndMakeVisible(presetList);
     loadPresetList();
+
+    popup.addItem(1, "Are you sure you want to delete?", false);
+    popup.addItem(2, "Yes");
+    popup.addItem(3, "No");
 
     saveButton.onClick = [this]()
         {
@@ -40,8 +46,15 @@ PresetPanel::PresetPanel(PresetManager& pm)
 
     deleteButton.onClick = [this]()
         {
-            presetManager.deletePreset(presetManager.getCurrentPreset());
-            loadPresetList();
+            popup.showMenuAsync(juce::PopupMenu::Options(),
+                [this](int result)
+                {
+                    if (result == 2)
+                    {
+                        presetManager.deletePreset(presetManager.getCurrentPreset());
+                        loadPresetList();
+                    }
+                });
         };
 
     previousPresetButton.onClick = [this]()
@@ -65,11 +78,32 @@ PresetPanel::PresetPanel(PresetManager& pm)
 void PresetPanel::resized()
 {
     auto bounds = getLocalBounds();
+    auto left = bounds.removeFromLeft(bounds.getWidth() * .25);
+    auto right = bounds.removeFromRight(bounds.getWidth() * .33);
+    auto tMiddle = bounds.removeFromTop(bounds.getHeight() * .2).reduced(5);
 
-    presetList.setBounds(bounds);
+    auto tLeft = left.removeFromTop(left.getHeight() * .2).reduced(5);
+    auto tRight = right.removeFromTop(right.getHeight() * .2).reduced(5);
+
+    auto saveArea = left.removeFromBottom(left.getHeight() * .5).reduced(5);
+    saveArea.removeFromBottom(saveArea.getHeight() * .5);
+
+    auto deleteArea = right.removeFromBottom(right.getHeight() * .5).reduced(5);
+    deleteArea.removeFromBottom(right.getHeight() * .5);
+
+    presetList.setBounds(tMiddle);
+    previousPresetButton.setBounds(tLeft);
+    nextPresetButton.setBounds(tRight);
+    saveButton.setBounds(saveArea);
+    deleteButton.setBounds(deleteArea);
 }
 
-void PresetPanel::configureButton(juce::Button& button, const juce::String& buttonText)
+void PresetPanel::paint(juce::Graphics& g)
+{
+    g.setFont(5);
+}
+
+void PresetPanel::configureButton(juce::TextButton& button, const juce::String& buttonText)
 {
     button.setButtonText(buttonText);
     button.setMouseCursor(juce::MouseCursor::PointingHandCursor);

@@ -11,18 +11,23 @@
 #pragma once
 #include <JuceHeader.h>
 #include "PresetManager.h"
+#include "../GUI/KiTiKLNF.h"
 
 struct PresetPanel : public juce::Component
 {
     PresetPanel(PresetManager& pm);
 
     void resized() override;
+    void paint(juce::Graphics& g) override;
 
 private:
 
-    PresetManager& presetManager;
+    Laf lnf;
 
-    void configureButton(juce::Button& button, const juce::String& buttonText);
+    PresetManager& presetManager;
+    juce::PopupMenu popup;
+
+    void configureButton(juce::TextButton& button, const juce::String& buttonText);
     void loadPresetList();
 
     juce::TextButton saveButton, deleteButton, previousPresetButton, nextPresetButton;

@@ -17,7 +17,7 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     addAndMakeVisible(filterComp);
     addAndMakeVisible(globalControls);
     addAndMakeVisible(lfoComp);
-    addAndMakeVisible(presetPanel);
+    addChildComponent(presetPanel); //set to be on bottom with z
 
     setKeyboard();
 

@@ -30,14 +30,14 @@ GlobalControls::GlobalControls(SimpleSynthAudioProcessor& ap) :
     addAndMakeVisible(bypassFilter);
     bypassFilter.setComponentID("Power");
 
-    openPresetManager.setToggleState(false, juce::dontSendNotification);
+    openPresetManager.setToggleState(false, juce::sendNotification);
     addAndMakeVisible(openPresetManager);
 
     openPresetManager.setClickingTogglesState(true);
 
     openPresetManager.onClick = [this]()
         {
-            isShowTrue(openPresetManager.getToggleState());
+            isShowTrue(openPresetManager.getToggleState()); //This is having the same glitch where its backwards and not working on first click
         };
 
 }
@@ -53,12 +53,11 @@ void GlobalControls::paint(juce::Graphics& g)
     auto logoArea = bounds.removeFromLeft(bounds.getWidth() * .2).reduced(5);
 
     auto simpleArea = logoArea.removeFromLeft(logoArea.getWidth() * .4);
-    auto maskArea = logoArea.removeFromLeft(logoArea.getWidth() * .33);
+    auto maskArea = logoArea.removeFromLeft(logoArea.getWidth() * .33).expanded(5,5);
     auto synthArea = logoArea.removeFromLeft(logoArea.getWidth());
 
     auto logo = juce::ImageCache::getFromMemory(BinaryData::KITIK_LOGO_NO_BKGD_png, BinaryData::KITIK_LOGO_NO_BKGD_pngSize);
-    //g.drawImage(logo, maskArea.toFloat());
-    openPresetManager.setImages(false, true, false, logo, 0, juce::Colours::white, juce::Image(), 0, juce::Colours::white, juce::Image(), 0, juce::Colour(64u, 194u, 230u));
+    openPresetManager.setImages(true, true, true, logo, 0, juce::Colours::white, juce::Image(), 0, juce::Colours::white, juce::Image(), 0, juce::Colour(64u, 194u, 230u));
     openPresetManager.setBounds(maskArea);
     //g.drawImage(logo, maskArea.toFloat(), juce::RectanglePlacement::fillDestination);
 
@@ -149,7 +148,7 @@ void GlobalControls::update(const std::vector<float> &values)
 
 void GlobalControls::isShowTrue(bool toggleState)
 {
-    presetManagerView = toggleState;
+    presetManagerView = !toggleState;
 }
 
 bool GlobalControls::showPresetManager()

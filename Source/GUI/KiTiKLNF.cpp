@@ -351,7 +351,7 @@ void Laf::drawPopupMenuItem(juce::Graphics& g, const juce::Rectangle<int>& area,
 
     if (isSeparator)
     {
-        auto r = area.reduced(5, 0);
+        auto r = area.reduced(5, 2);
         r.removeFromTop(roundToInt(((float)r.getHeight() * 0.5f) - 0.5f));
 
         g.setColour(juce::Colours::black.withAlpha(0.3f));
@@ -417,6 +417,51 @@ void Laf::drawPopupMenuItem(juce::Graphics& g, const juce::Rectangle<int>& area,
 
             g.drawText(shortcutKeyText, r, Justification::centredRight, true);
         }
+    }
+}
+
+void Laf::drawButtonBackground(juce::Graphics& g, juce::Button& button, const juce::Colour& backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
+{
+    using namespace juce;
+
+    auto cornerSize = 6.0f;
+    auto bounds = button.getLocalBounds().toFloat().reduced(0.5f, 0.5f);
+
+    auto baseColour = backgroundColour.withMultipliedSaturation(button.hasKeyboardFocus(true) ? 1.3f : 0.9f)
+        .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f);
+
+    if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
+        baseColour = baseColour.contrasting(shouldDrawButtonAsDown ? 0.2f : 0.05f);
+
+    g.setColour(baseColour);
+
+    auto flatOnLeft = button.isConnectedOnLeft();
+    auto flatOnRight = button.isConnectedOnRight();
+    auto flatOnTop = button.isConnectedOnTop();
+    auto flatOnBottom = button.isConnectedOnBottom();
+
+    if (flatOnLeft || flatOnRight || flatOnTop || flatOnBottom)
+    {
+        Path path;
+        path.addRoundedRectangle(bounds.getX(), bounds.getY(),
+            bounds.getWidth(), bounds.getHeight(),
+            cornerSize, cornerSize,
+            !(flatOnLeft || flatOnTop),
+            !(flatOnRight || flatOnTop),
+            !(flatOnLeft || flatOnBottom),
+            !(flatOnRight || flatOnBottom));
+
+        g.fillPath(path);
+
+        g.setColour(button.findColour(ComboBox::outlineColourId));
+        g.strokePath(path, PathStrokeType(1.0f));
+    }
+    else
+    {
+        g.fillRoundedRectangle(bounds, cornerSize);
+
+        g.setColour(juce::Colours::black.withAlpha(.7f));
+        g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
     }
 }
 

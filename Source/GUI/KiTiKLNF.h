@@ -28,6 +28,11 @@ struct Laf : juce::LookAndFeel_V4 {
         bool isSeparator, bool isActive, bool isHighlighted, bool isTicked, bool hasSubMenu,
         const juce::String& text, const juce::String& shortcutKeyText,
         const juce::Drawable* icon, const juce::Colour* textColour) override;
+    void drawButtonBackground(juce::Graphics& g,
+        juce::Button& button,
+        const juce::Colour& backgroundColour,
+        bool shouldDrawButtonAsHighlighted,
+        bool shouldDrawButtonAsDown) override;
 
     struct LevelMeter : juce::Component
     {
