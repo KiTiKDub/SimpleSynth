@@ -83,4 +83,7 @@ private:
     juce::Slider fmDepth{ "Depth" };
     juce::AudioProcessorValueTreeState::ButtonAttachment fmOscAT;
     juce::AudioProcessorValueTreeState::SliderAttachment fmDepthAT;
+
+    juce::Slider voices;
+    juce::AudioProcessorValueTreeState::SliderAttachment voicesAT;
 };

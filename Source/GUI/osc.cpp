@@ -20,10 +20,11 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts, Visualizer& viz) :
     sawAT1(apvts, "saw1", saw1), sawAT2(apvts, "saw2", saw2),
     squareAT1(apvts, "square1", square1), squareAT2(apvts, "square2", square2),
     triangleAT1(apvts, "triangle1", triangle1), triangleAT2(apvts, "triangle2", triangle2),
-    fmOscAT(apvts, "fmOsc", fmOsc), fmDepthAT(apvts, "fmDepth", fmDepth)
+    fmOscAT(apvts, "fmOsc", fmOsc), fmDepthAT(apvts, "fmDepth", fmDepth),
+    voicesAT(apvts, "voices", voices)
 {
     //vis = &viz;
-    //addAndMakeVisible(vis);
+    setRotarySlider(voices);
     setLookAndFeel(&lnf);
     setSlider(attack1);
     setSlider(decay1);
@@ -154,7 +155,9 @@ void OscComp::resized()
     gain2.setBounds(gainBounds2);
 
     auto fmBounds = boundsRight.removeFromLeft(boundsRight.getWidth() * .2);
-    auto fmOscBounds = fmBounds.removeFromTop(fmBounds.getHeight() * .5);
+    auto fmOscBounds = fmBounds.removeFromTop(fmBounds.getHeight() * .33);
+    auto voiceBounds = fmBounds.removeFromTop(fmBounds.getHeight() * .5);
+    voices.setBounds(voiceBounds);
     fmOsc.setBounds(fmOscBounds);
     fmDepth.setBounds(fmBounds);
 

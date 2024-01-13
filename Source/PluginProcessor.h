@@ -64,8 +64,6 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    void fillArrays();
-    void setLFOs(juce::AudioBuffer<float>& buffer);
     float getOutRMS(int channel);
 
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
@@ -80,6 +78,10 @@ public:
     Visualizer viz;
 
 private:
+
+    void manageVoices();
+    void fillArrays();
+    void setLFOs(juce::AudioBuffer<float>& buffer);
 
     GlobalGain globalGain;
     juce::Synthesiser synth1;
@@ -237,12 +239,10 @@ private:
      
     //RoadMap: (2.0?):
         //Dynamic Voice Adjustment -> books [4]
+        //Octave and fine tunning of oscs
         //Pitch/Mod Wheel visuals -> probably do last [6]
-        //Preset Manager -> Video [2]
-            //Check if you need an overwrite message when resaving a preset
 
     //Bugs/Design
-        //move osc into utility
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessor)

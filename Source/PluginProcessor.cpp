@@ -28,16 +28,9 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     presetManager = std::make_unique<PresetManager>(apvts);
 
     synth1.addSound(new SynthSound());
-    synth1.addVoice(new SynthVoice());
-    synth1.addVoice(new SynthVoice());
-    synth1.addVoice(new SynthVoice());
-    synth1.addVoice(new SynthVoice());
 
     synth2.addSound(new SynthSound());
-    synth2.addVoice(new SynthVoice());
-    synth2.addVoice(new SynthVoice());
-    synth2.addVoice(new SynthVoice());
-    synth2.addVoice(new SynthVoice());
+
 
     //Global Controls
     gGain = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("gGain"));
@@ -300,24 +293,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     fillArrays();
 
-    /*if (synth1.getNumVoices() < voices->get())
-    {
-        auto create = voices->get() - synth1.getNumVoices();
-        for (int nVoice = 0; nVoice < create; nVoice++)
-        {
-            synth1.addVoice(new SynthVoice());
-            //Need to figure out how to prepare voice after it is created
-        }
-    }
-    else
-    {
-        auto destroy = synth1.getNumSounds() - voices->get();
-        for (int nVoice = 0; nVoice < destroy; nVoice++)
-        {
-            synth1.removeVoice(nVoice);
-        }
-
-    }*/
+    manageVoices();
 
     int type = filterType->getIndex(); //USE THIS TO MAKE SURE ONLY ONE FILTER IS USED AT A TIME
 
@@ -329,7 +305,6 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth1.getVoice(i)))
         {
-            //voice->prepareToPlay(getSampleRate(), getBlockSize(), getTotalNumOutputChannels());
             voice->update(osc1Params[0], osc1Params[1], osc1Params[2], osc1Params[3], osc1Params[4]);
             voice->getOscillator().setWaveType(wavetype1);
             voice->getOscillator().setFmParams(synth1.getVoice(i)->getCurrentlyPlayingNote(), fmDepth->get(), fmOsc->get(), wavetype2); 
@@ -487,6 +462,36 @@ void SimpleSynthAudioProcessor::setLFOs(juce::AudioBuffer<float>& buffer)
     lfo2.modulateCombFilter(lfo2combFreq->get(), lfo2combFeedback->get(), lfo2combGain->get(), lfo2combMix->get(), lfo2Output, combParams);
 }
 
+void SimpleSynthAudioProcessor::manageVoices()
+{
+    std::vector<juce::Synthesiser*> synthVector{ &synth1, &synth2 };
+
+    for (int i = 0; i < synthVector.size(); i++)
+    {
+        if (synthVector[i]->getNumVoices() < voices->get())
+        {
+            auto create = voices->get() - synthVector[i]->getNumVoices();
+            for (int nVoice = 0; nVoice < create; nVoice++)
+            {
+                synthVector[i]->addVoice(new SynthVoice());
+                auto total = synthVector[i]->getNumVoices();
+                auto voice = dynamic_cast<SynthVoice*>(synthVector[i]->getVoice(total - 1));
+                voice->prepareToPlay(getSampleRate(), getBlockSize(), getTotalNumOutputChannels());
+            }
+        }
+        else
+        {
+            auto destroy = synthVector[i]->getNumVoices() - voices->get();
+            for (int nVoice = 0; nVoice < destroy; nVoice++)
+            {
+                auto total = synthVector[i]->getNumVoices();
+                synthVector[i]->removeVoice(total - 1 - nVoice);
+            }
+
+        }
+    }
+}
+
 float SimpleSynthAudioProcessor::getOutRMS(int channel)
 {
     jassert(channel == 0 || channel == 1);
@@ -518,7 +523,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterBool>("bypassSynth2", "Synth 2 Bypass", false));
     layout.add(std::make_unique<AudioParameterBool>("bypassFilter", "Filter Bypass", false));
 
-    //layout.add(std::make_unique<AudioParameterInt>("voices", "Synth Voices", 1, 8, 1));
+    layout.add(std::make_unique<AudioParameterInt>("voices", "Synth Voices", 1, 8, 3));
 
     //osc 1 
     layout.add(std::make_unique<AudioParameterBool>("sine1", "Osc 1 Sine Wave", true));
