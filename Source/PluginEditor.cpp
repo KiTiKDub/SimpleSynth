@@ -17,7 +17,13 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
     addAndMakeVisible(filterComp);
     addAndMakeVisible(globalControls);
     addAndMakeVisible(lfoComp);
-    addChildComponent(presetPanel); //set to be on bottom with z
+    addChildComponent(presetPanel); 
+
+    
+    pitchWheelValue.setSliderStyle(juce::Slider::LinearBarVertical);
+    pitchWheelValue.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
+    addAndMakeVisible(pitchWheelValue);
+
 
     setKeyboard();
 
@@ -95,8 +101,9 @@ void SimpleSynthAudioProcessorEditor::resized()
     lfoComp.setBounds(lfosBounds);
 
     setColour(0x1005004, juce::Colour(64u, 194u, 230u));
-    auto keyboardBounds = bounds;
+    auto keyboardBounds = bounds.removeFromRight(bounds.getWidth() * .9);
     keyboard.setBounds(keyboardBounds);
+    pitchWheelValue.setBounds(bounds);
 
 }
 
@@ -123,6 +130,8 @@ void SimpleSynthAudioProcessorEditor::timerCallback()
         oscComp.setVisible(true);
         presetPanel.setVisible(false);
     }
+
+    pitchWheelValue.setValue(audioProcessor.pitchWheelValue);
 }
 
 void SimpleSynthAudioProcessorEditor::setKeyboard()

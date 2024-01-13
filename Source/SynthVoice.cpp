@@ -19,6 +19,7 @@ void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::Synthesiser
 {
     osc.setWaveFreq(midiNoteNumber, 0, false, 0); //Need to change back
     adsr.noteOn();
+    DBG("Pitch Wheel Value: " << currentPitchWheelPosition);
 }
 
 void SynthVoice::stopNote(float velocity, bool allowTailOff)
@@ -30,7 +31,9 @@ void SynthVoice::stopNote(float velocity, bool allowTailOff)
 
 void SynthVoice::pitchWheelMoved(int newPitchWheelValue)
 {
-
+    auto currentFreq = osc.getFrequency(); //do math to get the correct frequency for pitch note bend.
+    pitchWheelValue = newPitchWheelValue;
+    //DBG("New Pitch Wheel Value: " << newPitchWheelValue);
 }
 
 void SynthVoice::controllerMoved(int controllerNumber, int newControllerValue)
@@ -70,6 +73,11 @@ void SynthVoice::update(float attack, float decay, float sustain, float release,
 {
     adsr.setADSR(attack, decay, sustain, release);
     osc.setGain(gain);
+}
+
+float SynthVoice::getPitchWheel()
+{
+    return pitchWheelValue;
 }
 
 void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels)

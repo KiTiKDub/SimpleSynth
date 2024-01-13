@@ -25,6 +25,7 @@ struct SynthVoice : public juce::SynthesiserVoice
     void prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels);
     void update(float attack, float decay, float sustain, float release, float gain);
     oscData& getOscillator() { return osc; }
+    float getPitchWheel();
     //Visualizer viz;
 
 private:
@@ -32,6 +33,8 @@ private:
     oscData fmOsc;
     adsrData adsr;
     juce::AudioBuffer<float> synthBuffer;
+
+    float pitchWheelValue{ 0 };
 };
 
 struct Visualizer : public juce::AudioVisualiserComponent

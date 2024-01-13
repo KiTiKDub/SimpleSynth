@@ -291,9 +291,13 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
+    auto voice = dynamic_cast<SynthVoice*>(synth1.getVoice(0));
+        
     fillArrays();
 
     manageVoices();
+
+    pitchWheelValue = voice->getPitchWheel();
 
     int type = filterType->getIndex(); //USE THIS TO MAKE SURE ONLY ONE FILTER IS USED AT A TIME
 
@@ -315,7 +319,6 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth2.getVoice(i)))
         {
-            //voice->prepareToPlay(getSampleRate(), getBlockSize(), getTotalNumOutputChannels());
             voice->update(osc2Params[0], osc2Params[1], osc2Params[2], osc2Params[3], osc2Params[4]);
             voice->getOscillator().setWaveType(wavetype2);
         }
