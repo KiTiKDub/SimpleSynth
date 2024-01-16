@@ -86,4 +86,10 @@ private:
 
     juce::Slider voices;
     juce::AudioProcessorValueTreeState::SliderAttachment voicesAT;
+
+    juce::Slider oscOctave1 { "Octave" },
+                 oscSemi1   { "Semi" },
+                 oscOctave2 { "Octave" },
+                 oscSemi2   { "Semi" };
+    juce::AudioProcessorValueTreeState::SliderAttachment oscOctave1AT, oscSemi1AT, oscOctave2AT, oscSemi2AT;
 };

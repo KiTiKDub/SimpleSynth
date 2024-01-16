@@ -20,7 +20,7 @@ void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::Synthesiser
     float bendAmount = juce::jmap((float)currentPitchWheelPosition, 0.f, 16383.f, .89f, 1.12f);
     customPitchWheelVal = juce::jmap((float)currentPitchWheelPosition, 0.f, 16383.f, 0.f, 10.f);
 
-    midiNoteNumber += pitchOctave * 12;
+    midiNoteNumber += pitchOctave * 12 + pitchSemi;
 
     osc.setWaveFreq(midiNoteNumber, false, bendAmount);
     adsr.noteOn();
@@ -96,6 +96,11 @@ float SynthVoice::getModWheel()
 void SynthVoice::setOctave(int octave)
 {
     pitchOctave = octave;
+}
+
+void SynthVoice::setSemi(int semitone)
+{
+    pitchSemi = semitone;
 }
 
 void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels)

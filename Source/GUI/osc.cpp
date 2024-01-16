@@ -21,7 +21,9 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts, Visualizer& viz) :
     squareAT1(apvts, "square1", square1), squareAT2(apvts, "square2", square2),
     triangleAT1(apvts, "triangle1", triangle1), triangleAT2(apvts, "triangle2", triangle2),
     fmOscAT(apvts, "fmOsc", fmOsc), fmDepthAT(apvts, "fmDepth", fmDepth),
-    voicesAT(apvts, "voices", voices)
+    voicesAT(apvts, "voices", voices), oscOctave1AT(apvts, "oscOctave1", oscOctave1),
+    oscSemi1AT(apvts, "oscSemi1", oscSemi1), oscOctave2AT(apvts, "oscOctave2", oscOctave2),
+    oscSemi2AT(apvts, "oscSemi2", oscSemi2)
 {
     //vis = &viz;
     setRotarySlider(voices);
@@ -75,6 +77,11 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts, Visualizer& viz) :
 
     addAndMakeVisible(oscWaves);
     addAndMakeVisible(oscWavesR);
+
+    setHorzSlider(oscOctave1);
+    setHorzSlider(oscSemi1);
+    setHorzSlider(oscOctave2);
+    setHorzSlider(oscSemi2);
 }
 
 OscComp::~OscComp()
@@ -149,6 +156,17 @@ void OscComp::resized()
     boundsLeft.translate(5, 0);
     oscWaves.setBounds(boundsLeft);
 
+    auto octaveArea = boundsLeft.removeFromLeft(boundsLeft.getWidth() * .5);
+    octaveArea.removeFromBottom(octaveArea.getHeight() * .9);
+    octaveArea.reduce(10, 0);
+    auto semiArea = boundsLeft;
+    semiArea.removeFromBottom(semiArea.getHeight() * .9);
+    semiArea.reduce(10, 0);
+
+    oscOctave1.setBounds(octaveArea);
+    oscSemi1.setBounds(semiArea);
+
+
     auto adsrBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .3);
     auto waveTypeBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .166);
     auto gainBounds2 = boundsRight.removeFromBottom(boundsRight.getHeight() * .18);
@@ -182,6 +200,16 @@ void OscComp::resized()
     boundsRight = boundsRight.reduced(5);
     boundsRight.removeFromRight(boundsRight.getWidth() * .02);
     oscWavesR.setBounds(boundsRight);
+
+    auto octaveArea2 = boundsRight.removeFromLeft(boundsRight.getWidth() * .5);
+    octaveArea2.removeFromBottom(octaveArea2.getHeight() * .9);
+    octaveArea2.reduce(10, 0);
+    auto semiArea2 = boundsRight;
+    semiArea2.removeFromBottom(semiArea2.getHeight() * .9);
+    semiArea2.reduce(10, 0);
+
+    oscOctave2.setBounds(octaveArea2);
+    oscSemi2.setBounds(semiArea2);
 
 }
 

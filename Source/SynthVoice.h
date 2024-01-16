@@ -28,6 +28,7 @@ struct SynthVoice : public juce::SynthesiserVoice
     float getPitchWheel();
     float getModWheel();
     void setOctave(int octave);
+    void setSemi(int semitone);
     //Visualizer viz;
 
 private:
@@ -39,6 +40,7 @@ private:
     float customPitchWheelVal = 5;
     float customModWheelVal = 5;
     float pitchOctave = 0;
+    float pitchSemi = 0;
 };
 
 struct Visualizer : public juce::AudioVisualiserComponent

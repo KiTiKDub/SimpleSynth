@@ -50,6 +50,8 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     saw1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("saw1"));
     square1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("square1"));
     triangle1 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("triangle1"));
+    oscOctave1 = dynamic_cast<juce::AudioParameterInt*>(apvts.getParameter("oscOctave1"));
+    oscSemi1 = dynamic_cast<juce::AudioParameterInt*>(apvts.getParameter("oscSemi1"));
 
     //Osc 2
     attack2 = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("attack2"));
@@ -61,6 +63,8 @@ SimpleSynthAudioProcessor::SimpleSynthAudioProcessor()
     saw2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("saw2"));
     square2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("square2"));
     triangle2 = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("triangle2"));
+    oscOctave2 = dynamic_cast<juce::AudioParameterInt*>(apvts.getParameter("oscOctave2"));
+    oscSemi2 = dynamic_cast<juce::AudioParameterInt*>(apvts.getParameter("oscSemi2"));
 
     //fm params
     fmOsc = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("fmOsc"));
@@ -301,8 +305,12 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     setLFOs(buffer);
 
-    auto voiceHolder = dynamic_cast<SynthVoice*>(synth1.getVoice(0));
-    voiceHolder->setOctave(0); //This works for octave control. Will do tomorrow. 
+    auto voiceHolder1 = dynamic_cast<SynthVoice*>(synth1.getVoice(0));
+    auto voiceHolder2 = dynamic_cast<SynthVoice*>(synth2.getVoice(0));
+    voiceHolder1->setOctave(oscOctave1->get());
+    voiceHolder2->setOctave(oscOctave2->get());
+    voiceHolder1->setSemi(oscSemi1->get());
+    voiceHolder2->setSemi(oscSemi2->get());
 
     for (int i = 0; i < synth1.getNumVoices(); ++i)
     {
@@ -328,8 +336,8 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     if(!bypassSynth2->get() && !fmOsc->get())
         synth2.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
-    customPitchWheelVal = voiceHolder->getPitchWheel();
-    customModWheelVal = voiceHolder->getModWheel();
+    customPitchWheelVal = voiceHolder1->getPitchWheel();
+    customModWheelVal = voiceHolder1->getModWheel();
 
     filters.updateLadderParams(ladderChoice->getIndex(), ladderParams[0], ladderParams[1], ladderParams[2]);
     filters.updatePhaserParams(phaserParams[0], phaserParams[1], phaserParams[2], phaserParams[3], phaserParams[4]);
@@ -543,6 +551,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("sustain1", "Osc 1 Sustain", zeroToOne, 1));
     layout.add(std::make_unique<AudioParameterFloat>("release1", "Osc 1 Release", range, .05));
     layout.add(std::make_unique<AudioParameterFloat>("oscGain1", "Osc 1 Gain", gainRange, -6));
+    layout.add(std::make_unique<AudioParameterInt>("oscOctave1", "Osc 1 Octave", -3, 3, 0));
+    layout.add(std::make_unique<AudioParameterInt>("oscSemi1", "Osc 1 Semitone", -12, 12, 0));
 
     //osc 2
     layout.add(std::make_unique<AudioParameterBool>("sine2", "Osc 2 Sine Wave", true));
@@ -555,6 +565,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout SimpleSynthAudioProcessor::c
     layout.add(std::make_unique<AudioParameterFloat>("sustain2", "Osc 2 Sustain", zeroToOne, .1));
     layout.add(std::make_unique<AudioParameterFloat>("release2", "Osc 2 Release", range, .05));
     layout.add(std::make_unique<AudioParameterFloat>("oscGain2", "Osc 2 Gain", gainRange, -6));
+    layout.add(std::make_unique<AudioParameterInt>("oscOctave2", "Osc 2 Octave", -3, 3, 0));
+    layout.add(std::make_unique<AudioParameterInt>("oscSemi2", "Osc 2 Semitone", -12, 12, 0));
 
     layout.add(std::make_unique<AudioParameterBool>("fmOsc", "FM from Osc 2", false));
     layout.add(std::make_unique<AudioParameterFloat>("fmDepth", "FM Depth", fmRange, 0));

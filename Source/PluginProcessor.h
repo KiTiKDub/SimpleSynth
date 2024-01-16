@@ -107,6 +107,8 @@ private:
     juce::AudioParameterFloat* sustain1{nullptr};
     juce::AudioParameterFloat* release1{nullptr};
     juce::AudioParameterFloat* oscGain1{nullptr};
+    juce::AudioParameterInt* oscOctave1{ nullptr };
+    juce::AudioParameterInt* oscSemi1{ nullptr };
     std::array<float, 5> osc1Params;
 
     //Osc1 Wave Type
@@ -122,6 +124,8 @@ private:
     juce::AudioParameterFloat* sustain2{nullptr};
     juce::AudioParameterFloat* release2{nullptr};
     juce::AudioParameterFloat* oscGain2{nullptr};
+    juce::AudioParameterInt* oscOctave2{ nullptr };
+    juce::AudioParameterInt* oscSemi2{ nullptr };
     std::array<float, 5> osc2Params;
 
     //Osc 2 Wave Type
