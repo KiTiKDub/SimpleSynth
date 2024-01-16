@@ -17,9 +17,13 @@ bool SynthVoice::canPlaySound(juce::SynthesiserSound* sound)
 
 void SynthVoice::startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound* sound, int currentPitchWheelPosition)
 {
-    osc.setWaveFreq(midiNoteNumber, 0, false, 0); //Need to change back
+    float bendAmount = juce::jmap((float)currentPitchWheelPosition, 0.f, 16383.f, .89f, 1.12f);
+    customPitchWheelVal = juce::jmap((float)currentPitchWheelPosition, 0.f, 16383.f, 0.f, 10.f);
+
+    midiNoteNumber += pitchOctave * 12;
+
+    osc.setWaveFreq(midiNoteNumber, false, bendAmount);
     adsr.noteOn();
-    DBG("Pitch Wheel Value: " << currentPitchWheelPosition);
 }
 
 void SynthVoice::stopNote(float velocity, bool allowTailOff)
@@ -31,14 +35,18 @@ void SynthVoice::stopNote(float velocity, bool allowTailOff)
 
 void SynthVoice::pitchWheelMoved(int newPitchWheelValue)
 {
-    auto currentFreq = osc.getFrequency(); //do math to get the correct frequency for pitch note bend.
-    pitchWheelValue = newPitchWheelValue;
-    //DBG("New Pitch Wheel Value: " << newPitchWheelValue);
+    float bendAmount = juce::jmap((float)newPitchWheelValue, 0.f, 16383.f, .89f, 1.12f);
+    customPitchWheelVal = juce::jmap((float)newPitchWheelValue, 0.f, 16383.f, 0.f, 10.f);
+
+    osc.setWaveFreq(49, true, bendAmount);
 }
 
 void SynthVoice::controllerMoved(int controllerNumber, int newControllerValue)
 {
-
+    if (controllerNumber == 1)
+    {
+        customModWheelVal = juce::jmap((float)newControllerValue, 0.f, 127.f, 0.f, 10.f);
+    }
 }
 
 void SynthVoice::renderNextBlock(juce::AudioBuffer< float >& outputBuffer, int startSample, int numSamples)
@@ -77,7 +85,17 @@ void SynthVoice::update(float attack, float decay, float sustain, float release,
 
 float SynthVoice::getPitchWheel()
 {
-    return pitchWheelValue;
+    return customPitchWheelVal;
+}
+
+float SynthVoice::getModWheel()
+{
+    return customModWheelVal;
+}
+
+void SynthVoice::setOctave(int octave)
+{
+    pitchOctave = octave;
 }
 
 void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels)

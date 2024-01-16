@@ -290,20 +290,19 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
-
-    auto voice = dynamic_cast<SynthVoice*>(synth1.getVoice(0));
         
     fillArrays();
 
     manageVoices();
 
-    pitchWheelValue = voice->getPitchWheel();
-
-    int type = filterType->getIndex(); //USE THIS TO MAKE SURE ONLY ONE FILTER IS USED AT A TIME
+    int type = filterType->getIndex();
 
     globalGain.setGain(gGain->get());
 
     setLFOs(buffer);
+
+    auto voiceHolder = dynamic_cast<SynthVoice*>(synth1.getVoice(0));
+    voiceHolder->setOctave(0); //This works for octave control. Will do tomorrow. 
 
     for (int i = 0; i < synth1.getNumVoices(); ++i)
     {
@@ -311,7 +310,7 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         {
             voice->update(osc1Params[0], osc1Params[1], osc1Params[2], osc1Params[3], osc1Params[4]);
             voice->getOscillator().setWaveType(wavetype1);
-            voice->getOscillator().setFmParams(synth1.getVoice(i)->getCurrentlyPlayingNote(), fmDepth->get(), fmOsc->get(), wavetype2); 
+            voice->getOscillator().setFmParams(synth1.getVoice(i)->getCurrentlyPlayingNote(), fmDepth->get(), fmOsc->get(), wavetype2);
         }
     }
 
@@ -328,6 +327,9 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         synth1.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
     if(!bypassSynth2->get() && !fmOsc->get())
         synth2.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+
+    customPitchWheelVal = voiceHolder->getPitchWheel();
+    customModWheelVal = voiceHolder->getModWheel();
 
     filters.updateLadderParams(ladderChoice->getIndex(), ladderParams[0], ladderParams[1], ladderParams[2]);
     filters.updatePhaserParams(phaserParams[0], phaserParams[1], phaserParams[2], phaserParams[3], phaserParams[4]);
@@ -482,7 +484,7 @@ void SimpleSynthAudioProcessor::manageVoices()
                 voice->prepareToPlay(getSampleRate(), getBlockSize(), getTotalNumOutputChannels());
             }
         }
-        else
+        else if (synthVector[i]->getNumVoices() > voices->get())
         {
             auto destroy = synthVector[i]->getNumVoices() - voices->get();
             for (int nVoice = 0; nVoice < destroy; nVoice++)
@@ -492,6 +494,8 @@ void SimpleSynthAudioProcessor::manageVoices()
             }
 
         }
+        else
+            return;
     }
 }
 

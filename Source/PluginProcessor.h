@@ -77,7 +77,8 @@ public:
     PresetManager& getPresetManager() { return *presetManager; }
     Visualizer viz;
 
-    float pitchWheelValue;
+    float customPitchWheelVal;
+    float customModWheelVal;
 
 private:
 
@@ -241,7 +242,10 @@ private:
      
     //RoadMap: (2.0?):
         //Octave and fine tunning of oscs
-        //Pitch/Mod Wheel visuals -> probably do last [6]
+        //Set look and feel for Vertical Bars
+        //set variable pitch bend?
+        //glide mode?
+        //
 
     //Bugs/Design
 

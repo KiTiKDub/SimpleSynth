@@ -44,7 +44,8 @@ private:
     juce::TooltipWindow name{ this, 100 };
     juce::DropShadow ds;
 
-    juce::Slider pitchWheelValue;
+    juce::Slider customPitchWheelVal,
+                 customModWheelVal;
     
     juce::MidiKeyboardComponent keyboard{ audioProcessor.keyState, juce::KeyboardComponentBase::horizontalKeyboard };
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSynthAudioProcessorEditor)
