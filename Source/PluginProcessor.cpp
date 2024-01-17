@@ -305,19 +305,14 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     setLFOs(buffer);
 
-    auto voiceHolder1 = dynamic_cast<SynthVoice*>(synth1.getVoice(0));
-    auto voiceHolder2 = dynamic_cast<SynthVoice*>(synth2.getVoice(0));
-    voiceHolder1->setOctave(oscOctave1->get());
-    voiceHolder2->setOctave(oscOctave2->get());
-    voiceHolder1->setSemi(oscSemi1->get());
-    voiceHolder2->setSemi(oscSemi2->get());
-
     for (int i = 0; i < synth1.getNumVoices(); ++i)
     {
         if (auto voice = dynamic_cast<SynthVoice*>(synth1.getVoice(i)))
         {
             voice->update(osc1Params[0], osc1Params[1], osc1Params[2], osc1Params[3], osc1Params[4]);
             voice->getOscillator().setWaveType(wavetype1);
+            voice->setOctave(oscOctave1->get());
+            voice->setSemi(oscSemi1->get());
             voice->getOscillator().setFmParams(synth1.getVoice(i)->getCurrentlyPlayingNote(), fmDepth->get(), fmOsc->get(), wavetype2);
         }
     }
@@ -328,6 +323,8 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         {
             voice->update(osc2Params[0], osc2Params[1], osc2Params[2], osc2Params[3], osc2Params[4]);
             voice->getOscillator().setWaveType(wavetype2);
+            voice->setOctave(oscOctave2->get());
+            voice->setSemi(oscSemi2->get());
         }
     }
 
@@ -335,9 +332,6 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         synth1.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
     if(!bypassSynth2->get() && !fmOsc->get())
         synth2.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
-
-    customPitchWheelVal = voiceHolder1->getPitchWheel();
-    customModWheelVal = voiceHolder1->getModWheel();
 
     filters.updateLadderParams(ladderChoice->getIndex(), ladderParams[0], ladderParams[1], ladderParams[2]);
     filters.updatePhaserParams(phaserParams[0], phaserParams[1], phaserParams[2], phaserParams[3], phaserParams[4]);
@@ -353,7 +347,8 @@ void SimpleSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     oscData.setBuffer(buffer);
     fftData.pushNextSampleIntoFifo(buffer);
-
+    customPitchWheelVal = dynamic_cast<SynthVoice*>(synth1.getVoice(0))->getPitchWheel();
+    customModWheelVal = dynamic_cast<SynthVoice*>(synth1.getVoice(0))->getModWheel();
 
     for (auto channel = 0; channel < totalNumOutputChannels; ++channel) 
     {

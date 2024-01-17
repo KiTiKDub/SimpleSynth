@@ -244,12 +244,10 @@ private:
     float lfo2Output;
     
      
-    //RoadMap: (2.0?):
-        //Octave and fine tunning of oscs
-        //Set look and feel for Vertical Bars
-        //set variable pitch bend?
-        //glide mode?
-        //
+    //RoadMap: (2.0):
+        //Try to let user pick Pitch bend range
+        //add glide?
+        
 
     //Bugs/Design
 
