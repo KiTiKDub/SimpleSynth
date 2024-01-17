@@ -14,11 +14,27 @@ void Laf::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int heigh
 {
     using namespace juce;
 
+    auto boundsFull = Rectangle<int>(x, y, width, height).toFloat();
+
+    if (slider.getComponentID() == "OCT")
+    {
+        g.setColour(Colour(186u, 34u, 34u).withAlpha(.25f));
+        g.fillRoundedRectangle(boundsFull.translated(0, 2), 5);
+
+        auto bounds = boundsFull.reduced(3, 1);
+
+        g.setColour(Colours::white);
+        auto name = slider.getName();
+        g.drawFittedText(name, bounds.toNearestInt(), Justification::centredLeft, 1);
+        g.drawFittedText((String)slider.getValue(), bounds.toNearestInt(), Justification::centredRight, 1);
+
+        return;
+    }
+
+    auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
+
     auto unfill = Colour(15u, 15u, 15u);
     auto fill = Colour(64u, 194u, 230u);
-
-    auto boundsFull = Rectangle<int>(x, y, width, height).toFloat();
-    auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
 
     auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
     auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
@@ -152,6 +168,28 @@ void Laf::drawRotarySlider(juce::Graphics& g, int x, int y, int width, int heigh
         g.setFont(fontSize);
         g.drawFittedText(str, r.getX(), r.getY(), r.getWidth(), r.getHeight(), juce::Justification::centred, 1);
     }
+    else if (slider.getComponentID() == "Voice")
+    {
+        auto fontSize = 14.f;
+        auto str = String('none');
+        auto value = slider.getValue();
+
+        str = String(value);
+        str.append("v", 3);
+
+        auto strWidth = g.getCurrentFont().getStringWidth(str);
+
+        Rectangle<float> r;
+        r.setBottom(boundsFull.getCentreY() + 10);
+        r.setLeft(boundsFull.getX() + boundsFull.getWidth() / 6);
+        r.setRight(boundsFull.getCentre().getX() + strWidth);
+        r.setTop(boundsFull.getCentreY() - 10);
+
+        g.setColour(Colours::whitesmoke);
+        g.setFont(fontSize);
+        g.drawFittedText(str, r.getX(), r.getY(), r.getWidth(), r.getHeight(), juce::Justification::centredLeft, 1);
+        //g.drawFittedText("Voice", boundsFull.getX(), r.getY(), r.getWidth(), r.getHeight(), juce::Justification::bottomLeft, 1);
+    }
 
 }
 
@@ -223,9 +261,15 @@ void Laf::drawLinearSlider(juce::Graphics& g, int x, int y, int width, int heigh
 
     if (slider.isBar())
     {
-        g.setColour(slider.findColour(Slider::trackColourId));
-        g.fillRect(slider.isHorizontal() ? Rectangle<float>(static_cast<float> (x), (float)y + 0.5f, sliderPos - (float)x, (float)height - 1.0f)
-            : Rectangle<float>((float)x + 0.5f, sliderPos, (float)width - 1.0f, (float)y + ((float)height - sliderPos)));
+        Rectangle<float> horz = Rectangle<float>(static_cast<float> (x), (float)y + 0.5f, sliderPos - (float)x, (float)height - 1.0f);
+        Rectangle<float> vert = Rectangle<float>((float)x, sliderPos, (float)width - 1.f, (float)y + ((float)height - sliderPos));
+
+        g.setColour(Colour(64u, 194u, 230u));
+        g.fillRect(slider.isHorizontal() ? horz : vert);
+        g.setColour(Colours::whitesmoke);
+
+        g.drawRect(boundsFull, 1);
+        g.drawRect(boundsFull, 1);
     }
     else
     {

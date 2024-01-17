@@ -13,6 +13,7 @@
 GlobalControls::GlobalControls(SimpleSynthAudioProcessor& ap) :
     bypass1AT(ap.apvts, "bypassSynth1", bypass1), bypass2AT(ap.apvts, "bypassSynth2", bypass2), 
     bypassFilterAT(ap.apvts, "bypassFilter", bypassFilter), gainAT(ap.apvts, "gGain", globalGain),
+    voicesAT(ap.apvts, "voices", voices),
     oscilloscope(ap.oscData), fft(ap.fftData)
 {
     setLookAndFeel(&lnf);
@@ -21,7 +22,8 @@ GlobalControls::GlobalControls(SimpleSynthAudioProcessor& ap) :
     addAndMakeVisible(oscilloscope);
     addAndMakeVisible(fft);
 
-    setRotarySlider(globalGain);
+    setLinearSlider(globalGain);
+    setRotarySlider(voices);
 
     addAndMakeVisible(bypass1);
     bypass1.setComponentID("Power");
@@ -70,13 +72,17 @@ void GlobalControls::paint(juce::Graphics& g)
 
     auto synth1Area = bounds.removeFromLeft(bounds.getWidth() * .17);
     g.setFont(juce::Font::Font());
-    g.drawFittedText(bypass1.getName(), synth1Area, juce::Justification::right, 1);
+    g.drawFittedText(bypass1.getName(), synth1Area, juce::Justification::centred, 1);
 
-    auto synth2Area = bounds.removeFromLeft(bounds.getWidth() * .21);
-    g.drawFittedText(bypass2.getName(), synth2Area, juce::Justification::right, 1);
+    auto synth2Area = bounds.removeFromLeft(bounds.getWidth() * .09);
+    g.drawFittedText(bypass2.getName(), synth2Area, juce::Justification::centred, 1);
 
     auto filterArea = bounds.removeFromRight(bounds.getWidth() * .45);
-    g.drawFittedText(bypassFilter.getName(), filterArea, juce::Justification::left, 1);
+    filterArea.removeFromRight(filterArea.getWidth() * .53);
+    filterArea.removeFromLeft(filterArea.getWidth() * .6);
+    filterArea.translate(-3, 0);
+    g.drawFittedText(bypassFilter.getName(), filterArea, juce::Justification::right, 1);
+    //g.drawRect(filterArea);
 
     g.setColour(juce::Colours::white);
 
@@ -93,14 +99,14 @@ void GlobalControls::resized()
     auto bounds = getLocalBounds();
     auto logoArea = bounds.removeFromLeft(bounds.getWidth() * .2).reduced(5);
     auto bp1Area = bounds.removeFromLeft(bounds.getWidth() * .05);
-    auto bp2Area = bounds.removeFromLeft(bounds.getWidth() * .32);
+    auto bp2Area = bounds.removeFromLeft(bounds.getWidth() * .2);
 
     bypass1.setBounds(bp1Area);
     bypass2.setBounds(bp2Area);
 
-    auto meterRight = bounds.removeFromRight(bounds.getWidth() * .045);
-    auto meterLeft = bounds.removeFromRight(bounds.getWidth() * .05);
-    auto gGainArea = bounds.removeFromRight(bounds.getWidth() * .15);
+    auto meterRight = bounds.removeFromRight(bounds.getWidth() * .035);
+    auto meterLeft = bounds.removeFromRight(bounds.getWidth() * .04);
+    auto gGainArea = bounds.removeFromRight(bounds.getWidth() * .1);
     auto filterArea = bounds.removeFromRight(bounds.getWidth() * .1);
 
     outMeter[0].setBounds(meterLeft);
@@ -108,21 +114,36 @@ void GlobalControls::resized()
     globalGain.setBounds(gGainArea);
     bypassFilter.setBounds(filterArea);
 
-    auto fftArea = bounds.removeFromRight(bounds.getWidth() * .6).reduced(5);
-    auto oscArea = bounds.reduced(5);
-    oscArea.translate(-8, 0);
+    auto fftArea = bounds.removeFromRight(bounds.getWidth() * .63).reduced(5);
+    auto oscArea = bounds.reduced(7,5);
+    oscArea.translate(1, 0);
     oscilloscope.setBounds(oscArea);
 
-    fftArea.translate(-7, 0);
-    fftArea.removeFromRight(fftArea.getWidth() * .35);
+    fftArea.removeFromRight(fftArea.getWidth() * .43);
     fft.setBounds(fftArea);
+
+    auto newBounds = getLocalBounds();
+    newBounds.removeFromLeft(logoArea.getWidth() + bypass1.getWidth() + bypass2.getWidth() + oscArea.getWidth() + fftArea.getWidth());
+    newBounds.removeFromRight(meterRight.getWidth() + meterLeft.getWidth() + gGainArea.getWidth() + filterArea.getWidth());
+    newBounds.reduce(20, -10);
+    voices.setBounds(newBounds);
+
 }
 
-void GlobalControls::setRotarySlider(juce::Slider& slider)
+void GlobalControls::setLinearSlider(juce::Slider& slider)
 {
     slider.setSliderStyle(juce::Slider::LinearHorizontal);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
     slider.setComponentID("gGain");
+    addAndMakeVisible(slider);
+}
+
+void GlobalControls::setRotarySlider(juce::Slider& slider)
+{
+    slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+    slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
+    slider.setTooltip("Voices");
+    slider.setComponentID("Voice");
     addAndMakeVisible(slider);
 }
 

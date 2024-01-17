@@ -33,6 +33,7 @@ public:
 
 private:
     SimpleSynthAudioProcessor& audioProcessor;
+    Laf lookNFeel;
 
     OscComp oscComp{audioProcessor.apvts, audioProcessor.viz};
     FilterComp filterComp{ audioProcessor.apvts };

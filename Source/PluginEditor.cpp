@@ -27,6 +27,8 @@ SimpleSynthAudioProcessorEditor::SimpleSynthAudioProcessorEditor (SimpleSynthAud
 
 SimpleSynthAudioProcessorEditor::~SimpleSynthAudioProcessorEditor()
 {
+    customPitchWheelVal.setLookAndFeel(nullptr);
+    customModWheelVal.setLookAndFeel(nullptr);
 }
 
 //==============================================================================
@@ -147,9 +149,11 @@ void SimpleSynthAudioProcessorEditor::setKeyboard()
 
     customPitchWheelVal.setSliderStyle(juce::Slider::LinearBarVertical);
     customPitchWheelVal.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
+    customPitchWheelVal.setLookAndFeel(&lookNFeel);
     addAndMakeVisible(customPitchWheelVal);
 
     customModWheelVal.setSliderStyle(juce::Slider::LinearBarVertical);
     customModWheelVal.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
+    customModWheelVal.setLookAndFeel(&lookNFeel);
     addAndMakeVisible(customModWheelVal);
 }

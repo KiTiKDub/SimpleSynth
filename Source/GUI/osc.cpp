@@ -21,12 +21,10 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts, Visualizer& viz) :
     squareAT1(apvts, "square1", square1), squareAT2(apvts, "square2", square2),
     triangleAT1(apvts, "triangle1", triangle1), triangleAT2(apvts, "triangle2", triangle2),
     fmOscAT(apvts, "fmOsc", fmOsc), fmDepthAT(apvts, "fmDepth", fmDepth),
-    voicesAT(apvts, "voices", voices), oscOctave1AT(apvts, "oscOctave1", oscOctave1),
-    oscSemi1AT(apvts, "oscSemi1", oscSemi1), oscOctave2AT(apvts, "oscOctave2", oscOctave2),
-    oscSemi2AT(apvts, "oscSemi2", oscSemi2)
+    oscOctave1AT(apvts, "oscOctave1", oscOctave1), oscSemi1AT(apvts, "oscSemi1", oscSemi1), 
+    oscOctave2AT(apvts, "oscOctave2", oscOctave2), oscSemi2AT(apvts, "oscSemi2", oscSemi2)
 {
     //vis = &viz;
-    setRotarySlider(voices);
     setLookAndFeel(&lnf);
     setSlider(attack1);
     setSlider(decay1);
@@ -78,10 +76,10 @@ OscComp::OscComp(juce::AudioProcessorValueTreeState& apvts, Visualizer& viz) :
     addAndMakeVisible(oscWaves);
     addAndMakeVisible(oscWavesR);
 
-    setHorzSlider(oscOctave1);
-    setHorzSlider(oscSemi1);
-    setHorzSlider(oscOctave2);
-    setHorzSlider(oscSemi2);
+    setNoShowSlider(oscOctave1);
+    setNoShowSlider(oscSemi1);
+    setNoShowSlider(oscOctave2);
+    setNoShowSlider(oscSemi2);
 }
 
 OscComp::~OscComp()
@@ -95,7 +93,6 @@ void OscComp::paint(juce::Graphics& g)
     auto bounds = getLocalBounds().reduced(5);
     auto boundsLeft = bounds.removeFromLeft(bounds.getWidth() * .5);
     auto boundsRight = bounds;
-    //g.drawRect(boundsRight);
 
     auto oscPicture = boundsLeft.removeFromTop(boundsLeft.getHeight() * .5);
     auto adsrBounds = bounds.removeFromBottom(bounds.getHeight() * .4);
@@ -107,7 +104,6 @@ void OscComp::paint(juce::Graphics& g)
     g.fillRect(oscPicture);
     g.setColour(juce::Colours::white);
     g.drawRect(oscPicture);
-    //g.drawFittedText("Soon...", oscPicture, juce::Justification::centred, 1);
 
     g.setColour(juce::Colours::black);
 
@@ -120,7 +116,6 @@ void OscComp::paint(juce::Graphics& g)
     g.fillRect(oscPictureR);
     g.setColour(juce::Colours::white);
     g.drawRect(oscPictureR);
-    //g.drawFittedText("Soon...", oscPictureR, juce::Justification::centred, 1);
 
 }
 
@@ -158,10 +153,12 @@ void OscComp::resized()
 
     auto octaveArea = boundsLeft.removeFromLeft(boundsLeft.getWidth() * .5);
     octaveArea.removeFromBottom(octaveArea.getHeight() * .9);
-    octaveArea.reduce(10, 0);
+    octaveArea.removeFromRight(octaveArea.getWidth() * .5);
+    octaveArea.translate(octaveArea.getWidth() * .5, 0);
     auto semiArea = boundsLeft;
     semiArea.removeFromBottom(semiArea.getHeight() * .9);
-    semiArea.reduce(10, 0);
+    semiArea.removeFromRight(semiArea.getWidth() * .5);
+    semiArea.translate(semiArea.getWidth() * .5, 0);
 
     oscOctave1.setBounds(octaveArea);
     oscSemi1.setBounds(semiArea);
@@ -173,9 +170,7 @@ void OscComp::resized()
     gain2.setBounds(gainBounds2);
 
     auto fmBounds = boundsRight.removeFromLeft(boundsRight.getWidth() * .2);
-    auto fmOscBounds = fmBounds.removeFromTop(fmBounds.getHeight() * .33);
-    auto voiceBounds = fmBounds.removeFromTop(fmBounds.getHeight() * .5);
-    voices.setBounds(voiceBounds);
+    auto fmOscBounds = fmBounds.removeFromTop(fmBounds.getHeight() * .5);
     fmOsc.setBounds(fmOscBounds);
     fmDepth.setBounds(fmBounds);
 
@@ -203,10 +198,12 @@ void OscComp::resized()
 
     auto octaveArea2 = boundsRight.removeFromLeft(boundsRight.getWidth() * .5);
     octaveArea2.removeFromBottom(octaveArea2.getHeight() * .9);
-    octaveArea2.reduce(10, 0);
+    octaveArea2.removeFromRight(octaveArea2.getWidth() * .5);
+    octaveArea2.translate(octaveArea2.getWidth() * .5, 0);
     auto semiArea2 = boundsRight;
     semiArea2.removeFromBottom(semiArea2.getHeight() * .9);
-    semiArea2.reduce(10, 0);
+    semiArea2.removeFromRight(semiArea2.getWidth() * .5);
+    semiArea2.translate(semiArea2.getWidth() * .5, 0);
 
     oscOctave2.setBounds(octaveArea2);
     oscSemi2.setBounds(semiArea2);
@@ -234,6 +231,14 @@ void OscComp::setRotarySlider(juce::Slider& slider)
     slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 1, 1);
     slider.setComponentID("Filter");
+    addAndMakeVisible(slider);
+}
+
+void OscComp::setNoShowSlider(juce::Slider& slider)
+{
+    slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+    slider.setTextBoxStyle(juce::Slider::NoTextBox, false, 20, 20);
+    slider.setComponentID("OCT");
     addAndMakeVisible(slider);
 }
 

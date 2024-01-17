@@ -22,6 +22,7 @@ struct GlobalControls : public juce::Component
     void paint(juce::Graphics& g) override;
     void resized() override;
 
+    void setLinearSlider(juce::Slider&);
     void setRotarySlider(juce::Slider&);
     void update(const std::vector<float>& values);
 
@@ -36,16 +37,16 @@ private:
     OscilloscopeComp oscilloscope;
     FFTComp fft;
 
-    juce::ToggleButton bypass1      { "Bypass Synth 1" },
-                       bypass2      { "Bypass Synth 2" },
-                       bypassFilter { "Bypass Filter" };
+    juce::ToggleButton bypass1      { "Synth 1" },
+                       bypass2      { "Synth 2" },
+                       bypassFilter { "Filter" };
 
     juce::AudioProcessorValueTreeState::ButtonAttachment bypass1AT, bypass2AT, bypassFilterAT;
 
     juce::ImageButton openPresetManager;
     bool presetManagerView;
 
-    juce::Slider globalGain;
-    juce::AudioProcessorValueTreeState::SliderAttachment gainAT;
+    juce::Slider globalGain, voices;
+    juce::AudioProcessorValueTreeState::SliderAttachment gainAT, voicesAT;
 
 };

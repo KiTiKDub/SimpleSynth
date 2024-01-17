@@ -43,6 +43,7 @@ struct OscComp : public juce::Component
     void setSlider(juce::Slider&);
     void setHorzSlider(juce::Slider&);
     void setRotarySlider(juce::Slider&);
+    void setNoShowSlider(juce::Slider&);
     void updateToggleState(juce::Button*);
 
 private:
@@ -82,10 +83,7 @@ private:
     juce::ToggleButton fmOsc;
     juce::Slider fmDepth{ "Depth" };
     juce::AudioProcessorValueTreeState::ButtonAttachment fmOscAT;
-    juce::AudioProcessorValueTreeState::SliderAttachment fmDepthAT;
-
-    juce::Slider voices;
-    juce::AudioProcessorValueTreeState::SliderAttachment voicesAT;
+    juce::AudioProcessorValueTreeState::SliderAttachment fmDepthAT;;
 
     juce::Slider oscOctave1 { "Octave" },
                  oscSemi1   { "Semi" },
