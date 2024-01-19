@@ -36,10 +36,11 @@ void oscData::setWaveFreq(int midiNoteNumber, bool pitchWheel, float depth)
     {
         setFrequency(juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber) * depth + fmMod);
         lastMidiNote = midiNoteNumber;
-
     }
     else
+    {
         setFrequency(juce::MidiMessage::getMidiNoteInHertz(lastMidiNote) * depth + fmMod);
+    }
 }
 
 void oscData::processNextBlock(juce::dsp::ProcessContextReplacing<float>& context)

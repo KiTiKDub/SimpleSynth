@@ -244,9 +244,12 @@ private:
     float lfo2Output;
     
      
-    //RoadMap: (2.0):
-        //Try to let user pick Pitch bend range
-        //add glide?
+    //RoadMap: (3.0):
+        //incoperate better pitch bend
+        //overhaul engine
+        //incoperate wave tables
+        //filter deisgn
+        //Draw Filter
         
 
     //Bugs/Design
