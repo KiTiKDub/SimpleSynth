@@ -169,7 +169,7 @@ void GlobalControls::update(const std::vector<float> &values)
 
 void GlobalControls::isShowTrue(bool toggleState)
 {
-    presetManagerView = !toggleState;
+    presetManagerView = toggleState;
 }
 
 bool GlobalControls::showPresetManager()

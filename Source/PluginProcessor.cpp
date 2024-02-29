@@ -452,7 +452,7 @@ void SimpleSynthAudioProcessor::setLFOs(juce::AudioBuffer<float>& buffer)
     //LFO 1
     lfo1.setWaveType(setLFO1Wave);
     lfo1.setRate(lfo1Rate->get());
-    lfo1Output = lfo1.processNextBlock(buffer); 
+    lfo1Output = lfo1.processNextBlock(buffer);
     lfo1.modulateADSR(lfo1attack1->get(), lfo1decay1->get(), lfo1sustain1->get(), lfo1release1->get(), lfo1oscGain1->get(), lfo1Output, osc1Params);
     lfo1.modulateADSR(lfo1attack2->get(), lfo1decay2->get(), lfo1sustain2->get(), lfo1release2->get(), lfo1oscGain2->get(), lfo1Output, osc2Params);
     lfo1.modulateLadderFilter(lfo1ladderFreq->get(), lfo1ladderRes->get(), lfo1ladderDrive->get(), lfo1Output, ladderParams);

@@ -122,7 +122,7 @@ void SimpleSynthAudioProcessorEditor::timerCallback()
 
     auto showPreset = globalControls.showPresetManager();
 
-    if (!showPreset)
+    if (showPreset)
     {
         presetPanel.setVisible(true);
         oscComp.setVisible(false);
