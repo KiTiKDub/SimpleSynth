@@ -26,6 +26,7 @@ void lfoData::prepareToPlay(double sampleRate, int samplesPerBlock, int outputCh
 
 float lfoData::processNextBlock(juce::AudioBuffer<float>& buffer)
 {
+    
     auto block = juce::dsp::AudioBlock<float>(buffer);
     auto context = juce::dsp::ProcessContextReplacing<float>(block);
 
@@ -63,7 +64,7 @@ void lfoData::modulateADSR(float attack, float decay, float sustain, float relea
     auto newAttackParam = juce::jmap(attack, 0.f, 1.f, 0.f, 5.f);
     newAttackParam *= newOutput.getNextValue();
     params[0] += newAttackParam;
-    params[0] = std::fmin(std::fmax(params[0], 0), 5);
+    params[0] = std::fmin(std::fmax(params[0], .1), 5);
 
     auto neweDecayParam = juce::jmap(decay, 0.f, 1.f, 0.f, 5.f);
     neweDecayParam *= newOutput.getNextValue();
@@ -77,7 +78,7 @@ void lfoData::modulateADSR(float attack, float decay, float sustain, float relea
     auto newReleaseParam = juce::jmap(release, 0.f, 1.f, 0.f, 5.f);
     newReleaseParam *= newOutput.getNextValue();
     params[3] += newReleaseParam;
-    params[3] = std::fmin(std::fmax(params[3], 0), 5);
+    params[3] = std::fmin(std::fmax(params[3], .1), 5);
 
     auto newGainParam = juce::jmap(gain, 0.f, 1.f, 0.f, 72.f);
     newGainParam *= newOutput.getNextValue();
